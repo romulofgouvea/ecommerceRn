@@ -1,0 +1,86 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "first_name": "Ardella",
+            "last_name": "Pierpoint",
+            "nickname": "apierpoint0",
+            "email": "apierpoint0@spiegel.de",
+            "password": "Ev4srh"
+        },
+        {
+            "id": 2,
+            "first_name": "Maurits",
+            "last_name": "Casaccia",
+            "nickname": "mcasaccia1",
+            "email": "mcasaccia1@mlb.com",
+            "password": "Gx381x2"
+        },
+        {
+            "id": 3,
+            "first_name": "Derrick",
+            "last_name": "McGiffin",
+            "nickname": "dmcgiffin2",
+            "email": "dmcgiffin2@dropbox.com",
+            "password": "fkDCZhKQsuKj"
+        },
+        {
+            "id": 4,
+            "first_name": "Vitia",
+            "last_name": "Saenz",
+            "nickname": "vsaenz3",
+            "email": "vsaenz3@pinterest.com",
+            "password": "u3S434"
+        },
+        {
+            "id": 5,
+            "first_name": "Derick",
+            "last_name": "Winton",
+            "nickname": "dwinton4",
+            "email": "dwinton4@hostgator.com",
+            "password": "vcKrPlWnW"
+        }
+    ],
+    "products": [
+        {
+            "id": 1,
+            "image": "http://dummyimage.com/234x104.png/dddddd/000000",
+            "name": "Beer - Sleeman Fine Porter",
+            "measure": "Kg",
+            "price": "9.34",
+            "stock": 78
+        },
+        {
+            "id": 2,
+            "image": "http://dummyimage.com/204x142.png/5fa2dd/ffffff",
+            "name": "Table Cloth 62x120 Colour",
+            "measure": "Pct",
+            "price": "2.28",
+            "stock": 45
+        },
+        {
+            "id": 3,
+            "image": "http://dummyimage.com/186x185.jpg/5fa2dd/ffffff",
+            "name": "Flower - Carnations",
+            "measure": "Und",
+            "price": "8.23",
+            "stock": 41
+        },
+        {
+            "id": 4,
+            "image": "http://dummyimage.com/146x105.bmp/dddddd/000000",
+            "name": "Garlic Powder",
+            "measure": "Kg",
+            "price": "9.79",
+            "stock": 33
+        },
+        {
+            "id": 5,
+            "image": "http://dummyimage.com/167x240.png/cc0000/ffffff",
+            "name": "Pastry - Baked Cinnamon Stick",
+            "measure": "Unid",
+            "price": "6.47",
+            "stock": 7
+        }
+    ]
+}

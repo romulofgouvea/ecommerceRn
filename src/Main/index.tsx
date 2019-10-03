@@ -1,76 +1,118 @@
-import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
-import { FlatList, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { FlatList, View, ActivityIndicator, Text } from "react-native";
 
-import { Card, Badge } from '../Components';
+import { Card, Badge, SerachBar } from "../Components";
 
-import { Container, Header, Icon, ImageHeader, ContainerCards } from './styles';
+import { Container, Header, Icon, ImageHeader, ContainerCards } from "./styles";
+import api from "../Services";
 
 function Main() {
+  //Variables
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSearch, setIsSearch] = useState(false);
 
+  //Action Functions
+  function handleMenu() {
+    alert("Open Menu");
+  }
 
-    const renderCardItem = ({ item }) => {
-        if (item.empty) {
-            return <View style={{ flex: 1 }} />;
-        }
-        return <Card />
+  function handleSearch() {
+    setIsSearch(!isSearch);
+  }
+
+  function handleCart() {}
+
+  //Lifecycle Functions
+  useEffect(() => {
+    const getProducts = async () =>
+      await api
+        .get("/products")
+        .then(res => {
+          setProducts(res.data);
+        })
+        .catch(err => err);
+    getProducts();
+
+    setIsLoading(false);
+  }, []);
+
+  //Render Functions
+  const renderCardItem = ({ item }) => {
+    if (item.empty) {
+      return <View style={{ flex: 1 }} />;
+    }
+    return <Card product={item} />;
+  };
+
+  function createRows(data, columns) {
+    const rows = Math.floor(data.length / columns);
+    let lastRowElements = data.length - rows * columns;
+    while (lastRowElements !== columns) {
+      data.push({
+        // [D]
+        id: `empty-${lastRowElements}`,
+        name: `empty-${lastRowElements}`,
+        empty: true
+      });
+      lastRowElements += 1;
+    }
+    return data;
+  }
+
+  const renderCards = () => {
+    if (isLoading) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            padding: 20,
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <ActivityIndicator />
+        </View>
+      );
     }
 
-    function createRows(data, columns) {
-        const rows = Math.floor(data.length / columns);
-        let lastRowElements = data.length - rows * columns;
-        // while (lastRowElements !== columns && rows > 1) {
-        while (lastRowElements !== columns) {
-            data.push({ // [D]
-                id: `empty-${lastRowElements}`,
-                name: `empty-${lastRowElements}`,
-                empty: true
-            });
-            lastRowElements += 1;
-        }
-        return data;
-    }
-
-    const renderCards = () => {
-        const columns = 2;
-        const arr = [...Array(5).fill(0)];
-
-        return (
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                numColumns={columns}
-                data={createRows(arr, columns)}
-                keyExtractor={item => (item + Math.random().toString())}
-                renderItem={renderCardItem}
-            />
-        )
-    }
-
-    const renderHeader = () => (
-        <Header>
-            <Icon>
-                <MaterialIcons name="format-align-left" size={20} color="#868686" />
-            </Icon>
-            <ImageHeader />
-
-            <Icon>
-                <MaterialIcons name="search" size={20} color="#868686" />
-            </Icon>
-            <Icon>
-                <MaterialIcons name="local-mall" size={20} color="#868686" />
-                <Badge>5</Badge>
-            </Icon>
-        </Header>
-    )
-
+    const columns = 2;
     return (
-        <Container>
-            {renderHeader()}
-            <ContainerCards>
-                {renderCards()}
-            </ContainerCards>
-        </Container>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        numColumns={columns}
+        data={createRows(products, columns)}
+        keyExtractor={item => item.id}
+        renderItem={renderCardItem}
+      />
     );
+  };
+
+  const renderHeader = () => (
+    <Header>
+      <Icon>
+        <MaterialIcons name="format-align-left" size={20} color="#868686" />
+      </Icon>
+      <ImageHeader />
+
+      <Icon onPress={handleSearch}>
+        <MaterialIcons name="search" size={20} color="#868686" />
+      </Icon>
+      <Icon>
+        <MaterialIcons name="local-mall" size={20} color="#868686" />
+        <Badge>1</Badge>
+      </Icon>
+    </Header>
+  );
+
+  return (
+    <Container>
+      {renderHeader()}
+      {isSearch && <SerachBar />}
+      <ContainerCards>{renderCards()}</ContainerCards>
+    </Container>
+  );
 }
 
 export default Main;
