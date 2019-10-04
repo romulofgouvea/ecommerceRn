@@ -6,7 +6,6 @@ const ProductSchema = new mongoose.Schema({
     measure: String,
     price: Number,
     stock: Number,
-
 }, {
     timestamps: true
 })
