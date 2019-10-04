@@ -5,13 +5,22 @@ const cors = require('cors');
 const app = express();
 const port_default = 3333;
 
+const serverHttp = require('http').Server(app);
+
+const io = require('socket.io')(serverHttp);
+
+app.use((req, res) => {
+    req.io = io;
+    next();
+})
+
 app.use(cors())
 app.use('/files', express.static(path.resolve(__dirname, '..', 'uploads', 'resized')));
 app.use(require('../../routes'));
 
 const startWebServer = (port = 0) => {
     return new Promise((resolve, reject) => {
-        const server = app.listen(port | port_default, '0.0.0.0', () => {
+        const server = serverHttp.listen(port | port_default, '0.0.0.0', () => {
             console.log(`> [SERVER] Listening on http://localhost:${port | port_default}`)
 
             resolve({

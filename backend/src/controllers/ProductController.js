@@ -45,6 +45,8 @@ async function PostProduct(req, res) {
         image: imageName, name, measure, price, stock
     })
 
+    req.io.emit('product', product);
+
     return res.json(product);
 }
 
