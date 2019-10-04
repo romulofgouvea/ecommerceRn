@@ -1,5 +1,24 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://mongo:mongo@clusterecommerce-cejkv.mongodb.net/admin?retryWrites=true&w=majority', {
+const options = {
+    keepAlive: 1,
+    useUnifiedTopology: true,
     useNewUrlParser: true,
-});
+};
+
+function startMongoDb(enviroment = 'dev') {
+    if (enviroment === 'dev') {
+        mongoose.connect('mongodb://localhost:27017/ecommerce', options)
+            .then(() => console.log("Database ok :)"))
+            .catch((err) => console.log("MONGODB ", err));
+        return;
+    }
+    mongoose.connect('mongodb+srv://mongo:mongo@clusterecommerce-cejkv.mongodb.net/admin?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+    });
+}
+
+
+module.exports = {
+    startMongoDb
+}
