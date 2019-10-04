@@ -1,18 +1,3 @@
-# Mobile
-
-node_modules/**/*
-.expo/*
-.expo-shared/*
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
-web-report/
-
 
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node

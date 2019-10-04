@@ -1,0 +1,12 @@
+{
+    "extends": "airbnb",
+    "rules": {},
+    "plugins": ["jsx-a11y", "import"],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"]
+            }
+        }
+    }
+}
