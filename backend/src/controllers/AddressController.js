@@ -1,20 +1,14 @@
 var mongoose = require('mongoose');
 
-async function GetAll(req, res) {
+async function CreateAddress(req, res) {
     res.sendStatus(200);
 }
 
-async function GetAddress(req, res) {
+async function UpdateAddress(req, res) {
     res.sendStatus(200);
 }
-
-async function PostAddress(req, res) {
-    res.sendStatus(200);
-}
-
 
 module.exports = {
-    GetAll,
-    GetAddress,
-    PostAddress
+    CreateAddress,
+    UpdateAddress
 }

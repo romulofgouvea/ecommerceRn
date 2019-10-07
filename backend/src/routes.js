@@ -3,6 +3,7 @@ var multer = require('multer');
 
 const UserController = require('./controllers/UserController');
 const ProductController = require('./controllers/ProductController');
+const AddressController = require('./controllers/AddressController');
 const UploadConfig = require('./config/upload')
 
 const routes = new express.Router();
@@ -14,7 +15,12 @@ routes.get('/', (req, res) => {
 
 //Users
 routes.get('/users/:id', UserController.GetUser);
-routes.post('/users', UserController.PostUser);
+routes.post('/users', UserController.CreateUser);
+routes.put('/users/:id', UserController.UpdateUser);
+
+//Address
+routes.post('/address', AddressController.CreateAddress);
+routes.put('/address/:userId', AddressController.UpdateAddress);
 
 //Products
 routes.get('/products', ProductController.GetAll);
