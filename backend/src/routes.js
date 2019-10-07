@@ -20,7 +20,7 @@ routes.put('/users/:id', UserController.UpdateUser);
 
 //Address
 routes.post('/address', AddressController.CreateAddress);
-routes.put('/address/:userId', AddressController.UpdateAddress);
+routes.put('/address/:id', AddressController.UpdateAddress);
 
 //Products
 routes.get('/products', ProductController.GetAll);
