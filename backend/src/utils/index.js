@@ -1,9 +1,17 @@
-const fs = require('fs');
+var mongoose = require('mongoose');
 
-function verifyFolderUpload(){
-
+function verifyId(id) {
+    try {
+        if (!id) {
+            throw "Esse Id não existe!";
+        } else if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw "Esse Id é valido!";
+        }
+    } catch (error) {
+        return;
+    }
 }
 
 module.exports = {
-    verifyFolderUpload
+    verifyId
 }
