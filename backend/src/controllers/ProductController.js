@@ -29,30 +29,65 @@ async function GetProduct(req, res) {
     }
 }
 
-async function PostProduct(req, res) {
-    const { name, measure, price, stock } = req.body;
-    const { filename: image } = req.file;
+async function CreateProduct(req, res) {
+    try {
+        const { name, measure, price, stock } = req.body;
+        const { filename: image } = req.file;
 
-    let imageName = `${image.replace(/\..*/g, "")}.jpg`;
-    await sharp(req.file.path)
-        .resize(500)
-        .jpeg({ quality: 80 })
-        .toFile(path.resolve(req.file.destination, 'resized', imageName));
+        let imageName = `${image.replace(/\..*/g, "")}.jpg`;
+        await sharp(req.file.path)
+            .resize(500)
+            .jpeg({ quality: 80 })
+            .toFile(path.resolve(req.file.destination, 'resized', imageName));
 
-    fs.unlinkSync(req.file.path);
+        fs.unlinkSync(req.file.path);
 
-    const product = await Product.create({
-        image: imageName, name, measure, price, stock
-    })
+        const product = await Product.create({
+            image: imageName, name, measure, price, stock
+        })
 
-    req.io.emit('product', product);
+        req.io.emit('product', product);
 
-    return res.json(product);
+        return res.json(product);
+    } catch (error) {
+        res.sendStatus(404);
+    }
+}
+async function UpdateProduct(req, res) {
+    try {
+        const { name, measure, price, stock } = req.body;
+        const { filename: image } = req.file;
+
+        let imageName = `${image.replace(/\..*/g, "")}.jpg`;
+        await sharp(req.file.path)
+            .resize(500)
+            .jpeg({ quality: 80 })
+            .toFile(path.resolve(req.file.destination, 'resized', imageName));
+
+        fs.unlinkSync(req.file.path);
+
+        const product = await Product.findById(req.params.id);
+
+        product.image = imageName;
+        product.name = name;
+        product.measure = measure;
+        product.price = price;
+        product.stock = stock;
+
+        await product.save();
+
+        req.io.emit('product', product);
+
+        return res.json(product);
+    } catch (error) {
+        res.sendStatus(404);
+    }
 }
 
 
 module.exports = {
     GetAll,
     GetProduct,
-    PostProduct
+    CreateProduct,
+    UpdateProduct,
 }

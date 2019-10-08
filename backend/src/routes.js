@@ -25,6 +25,7 @@ routes.put('/address/:id', AddressController.UpdateAddress);
 //Products
 routes.get('/products', ProductController.GetAll);
 routes.get('/products/:id', ProductController.GetProduct);
-routes.post('/products', upload.single('image'), ProductController.PostProduct);
+routes.post('/products', upload.single('image'), ProductController.CreateProduct);
+routes.put('/products/:id', upload.single('image'), ProductController.UpdateProduct);
 
 module.exports = routes;
