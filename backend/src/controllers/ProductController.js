@@ -68,6 +68,12 @@ async function UpdateProduct(req, res) {
 
         const product = await Product.findById(req.params.id);
 
+        try {
+            fs.unlinkSync(path.resolve(req.file.destination, 'resized', product.image));
+        } catch (error) {
+
+        }
+
         product.image = imageName;
         product.name = name;
         product.measure = measure;
@@ -80,7 +86,8 @@ async function UpdateProduct(req, res) {
 
         return res.json(product);
     } catch (error) {
-        res.sendStatus(404);
+        console.log("Ops...", error);
+        res.sendStatus(403);
     }
 }
 
