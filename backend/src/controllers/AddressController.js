@@ -8,29 +8,30 @@ async function CreateAddress(req, res) {
         const userId = user._id;
         if (!userId) {
             throw "Esse Id de usuário não existe!";
-        }
-
-        var _id = mongoose.Types.ObjectId.isValid(userId);
-
-        if (!_id) {
+        } else if (!mongoose.Types.ObjectId.isValid(userId)) {
             throw "Esse Id de usuário não é valido!";
         }
 
-        const userBd = await User.findById(userId, { _id: 0, createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 }).populate('address');
-        if (!userBd.address)
-            userBd.address = [];
+        const userBd = await User.findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 })
+            .populate('address')
+            .then(async userTemp => {
+                if (!userTemp.address)
+                    userTemp.address = [];
 
-        let tempAddress = [];
-        for (let ad of address) {
-            const { street, number, complement, cep, neighborhood, city } = ad;
-            let ads = await Address.create({ street, number, complement, cep, neighborhood, city });
-            tempAddress.push(ads);
-        }
+                let tempAddress = [];
+                for (let ad of address) {
+                    const { street, number, complement, cep, neighborhood, state, city } = ad;
+                    let ads = await Address.create({ street, number, complement, cep, neighborhood, state, city });
+                    tempAddress.push(ads);
+                }
+                tempAddress = [...userTemp.address, ...tempAddress]
+                userTemp.address = tempAddress;
 
-        tempAddress = [...userBd.address, ...tempAddress];
-        await User.replaceOne({ _id: userId }, { address: tempAddress });
+                userTemp.save();
+                return userTemp;
+            });
 
-        return res.json({ address: tempAddress });
+        return res.json({ address: userBd.address });
     } catch (error) {
         console.log(error)
         res.sendStatus(403);
@@ -60,27 +61,25 @@ async function UpdateAddress(req, res) {
             throw "Esse Id de endereço não é valido!";
         }
 
-        const userBd = await User.find({
-            'address._id': addressId
-        });
+        const userBd = await User.find({ address: { _id: addressId } });
 
-        console.log(userBd)
-        // if (!userBd.address)
-        //     userBd.address = [];
+        if (userBd.length > 0) {
+            const ads = await Address.findById(addressId);
 
-        // let tempAddress = [];
-        // for (let ad of address) {
-        //     const { street, number, complement, cep, neighborhood, city } = ad;
-        //     let ads = await Address.create({ street, number, complement, cep, neighborhood, city });
-        //     tempAddress.push(ads);
-        // }
+            const { street, number, complement, cep, neighborhood, state, city } = address;
 
-        // tempAddress = [...userBd.address, ...tempAddress];
-        // await User.replaceOne({ _id: userId }, { address: tempAddress });
+            ads.street = street;
+            ads.number = number;
+            ads.complement = complement;
+            ads.cep = cep;
+            ads.neighborhood = neighborhood;
+            ads.state = state;
+            ads.city = city;
 
-        // return res.json({ address: tempAddress });
-        res.sendStatus(200);
-
+            await ads.save();
+            return res.json(ads);
+        }
+        res.sendStatus(403);
     } catch (error) {
         console.log(error)
         res.sendStatus(403);

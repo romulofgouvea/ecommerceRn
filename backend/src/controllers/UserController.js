@@ -28,8 +28,8 @@ async function CreateUser(req, res) {
 
         const tempAddress = [];
         for (let ad of address) {
-            const { street, number, complement, cep, neighborhood, city } = ad;
-            let ads = await Address.create({ street, number, complement, cep, neighborhood, city });
+            const { street, number, complement, cep, neighborhood, state, city } = ad;
+            let ads = await Address.create({ street, number, complement, cep, neighborhood, state, city });
             tempAddress.push(ads);
         }
 
