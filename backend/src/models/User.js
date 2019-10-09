@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
-const AddressSchema = require('./Address');
+const ENUM_PROVIDER = ["FACEBOOK", "GOOGLE"];
 
 const UserSchema = new mongoose.Schema({
+    avatar: {
+        type: String
+    },
     name: {
         type: String,
         require: true
@@ -14,6 +17,17 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         require: true
+    },
+    provider: {
+        uid: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            enum: ENUM_PROVIDER,
+            required: true
+        }
     },
     address: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -33,4 +47,7 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = {
+    User: mongoose.model('User', UserSchema),
+    ENUM_PROVIDER
+};
