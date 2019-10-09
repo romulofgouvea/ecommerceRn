@@ -3,6 +3,7 @@ import { Image, StatusBar } from "react-native";
 
 import { Container } from "./styles";
 
+// @ts-ignore
 import Logo from '../../../assets/icon.png';
 
 function Welcome({ navigation }) {

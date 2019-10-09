@@ -3,7 +3,10 @@ import { StatusBar } from "react-native";
 
 import { Container, LoginImage, LoginButton, LoginText } from "./styles";
 
+// @ts-ignore
 import Logo from '../../../assets/icon.png';
+
+import { GoogleApi } from '../../Services/Google';
 import { FacebookApi } from '../../Services/Facebook';
 
 function Login({ navigation }) {
@@ -21,8 +24,14 @@ function Login({ navigation }) {
     }
   }
 
-  function handleLoginGoogle() {
+  async function handleLoginGoogle() {
+    try {
+      const token = await GoogleApi.loginAsync();
 
+      await this.props.authStore.login(token, 'GOOGLE');
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
   //Lifecycle Functions

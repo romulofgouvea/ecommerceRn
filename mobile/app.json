@@ -21,7 +21,14 @@
     "ios": {
       "supportsTablet": true
     },
-    "facebookAppId":"474598466479156",
-    "facebookDisplayName":"fb474598466479156"
+    "facebookAppId": "474598466479156",
+    "facebookScheme": "fb474598466479156",
+    "facebookDisplayName": "ecommerce",
+    "extra": {
+      "googleAppId": {
+        "ios": "",
+        "android": ""
+      }
+    }
   }
 }
