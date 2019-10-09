@@ -33,7 +33,7 @@ const Screens = createSwitchNavigator({
     Login,
     App: MainDrawer
 }, {
-    initialRouteName: "Welcome",
+    initialRouteName: "Login",
     defaultNavigationOptions: {
         header: null
     }
