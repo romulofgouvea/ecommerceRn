@@ -5,6 +5,23 @@ const User = require('../models/User');
 const Address = require('../models/Address');
 
 const AuthProvider = require('../config/services/authProvider');
+const AuthServices = require('../config/services/auth');
+
+const userAuth = async (req, res, next) => {
+    const token = AuthServices.getTokenFromHeaders(req);
+    if (!token) {
+        req.user = null;
+        return res.sendStatus(401);
+    }
+    const _user = await User.User.findById(token.id);
+    if (!_user) {
+        req.user = null;
+
+        return res.sendStatus(401);
+    }
+    req.user = _user;
+    return next();
+};
 
 async function GetUser(req, res) {
     try {
@@ -75,8 +92,8 @@ async function CreateUser(req, res) {
         const { provider: providerData, ...userInfo } = data;
 
         if (!_user) {
-            const user = await User.User.create({ ...userInfo, provider: providerData });
-            return res.json(user);
+            const user = await User.User.create({ ...userInfo, provider: [providerData] });
+            return res.json({ token: AuthServices.createToken(user) })
         }
 
         const providerExist = _user.provider.find(
@@ -86,14 +103,14 @@ async function CreateUser(req, res) {
         );
 
         if (providerExist) {
-            return _user;
+            return res.json({ token: AuthServices.createToken(_user) });
         }
 
         _user.provider.push(providerData);
 
         await _user.save();
 
-        return res.json(_user);
+        return res.json({ token: AuthServices.createToken(_user) });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -135,6 +152,7 @@ async function UpdateUser(req, res) {
 }
 
 module.exports = {
+    userAuth,
     GetUser,
     CreateUser,
     UpdateUser

@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    provider: {
+    provider: [{
         uid: {
             type: String,
             required: true
@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
             enum: ENUM_PROVIDER,
             required: true
         }
-    },
+    }],
     address: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'

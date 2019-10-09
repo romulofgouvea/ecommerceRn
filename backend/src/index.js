@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const Webserver = require('./config/services/server');
 const Database = require('./config/services/database');
 
