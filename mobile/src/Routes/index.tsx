@@ -1,18 +1,42 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React from 'react';
+import {
+    createAppContainer,
+    createSwitchNavigator,
+} from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createStackNavigator } from 'react-navigation-stack';
 
-import { NativeRouter, Route, Link } from "react-router-native";
+//Screens
+import Main from '../Screens/Main';
+import Welcome from '../Screens/Welcome';
+import Login from '../Screens/Login';
+import Cart from '../Screens/Cart';
 
-import Main from '../Main';
-
-class Routes extends React.Component {
-    render() {
-        return (
-            <NativeRouter>
-                <Route exact path="/" component={Main} />
-            </NativeRouter>
-        );
+const stackMain = createStackNavigator({
+    Main,
+    Cart
+}, {
+    defaultNavigationOptions: {
+        header: null
     }
-}
+})
 
-export default Routes;
+const MainDrawer = createDrawerNavigator({
+    MainTabs: {
+        screen: stackMain,
+        navigationOptions: () => ({ title: "Início" })
+    },
+});
+
+const Screens = createSwitchNavigator({
+    Welcome,
+    Login,
+    App: MainDrawer
+}, {
+    initialRouteName: "Welcome",
+    defaultNavigationOptions: {
+        header: null
+    }
+})
+
+export default createAppContainer(Screens);

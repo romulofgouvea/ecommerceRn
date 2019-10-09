@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, View, ActivityIndicator, Text } from "react-native";
 
-import { Card, Badge, SerachBar } from "../Components";
+import { Card, Badge, SerachBar } from "../../Components";
 
 import { Container, Header, Icon, ImageHeader, ContainerCards } from "./styles";
-import api from "../Services";
+import api from "../../Services";
 
-function Main() {
+function Main({ navigation }) {
   //Variables
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,14 +15,14 @@ function Main() {
 
   //Action Functions
   function handleMenu() {
-    alert("Open Menu");
+    navigation.toggleDrawer();
   }
 
   function handleSearch() {
     setIsSearch(!isSearch);
   }
 
-  function handleCart() {}
+  function handleCart() { }
 
   //Lifecycle Functions
   useEffect(() => {
@@ -91,7 +91,7 @@ function Main() {
 
   const renderHeader = () => (
     <Header>
-      <Icon>
+      <Icon onPress={handleMenu}>
         <MaterialIcons name="format-align-left" size={20} color="#868686" />
       </Icon>
       <ImageHeader />
