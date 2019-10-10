@@ -9,7 +9,7 @@ interface IProps {
   query?: string;
 }
 
-const Card: React.FC<IProps> = ({ query }) => {
+const Search: React.FC<IProps> = ({ query }) => {
   return (
     <Container>
       <SearchInput underlineColorAndroid="transparent" />
@@ -20,4 +20,4 @@ const Card: React.FC<IProps> = ({ query }) => {
   );
 };
 
-export default Card;
+export default Search;

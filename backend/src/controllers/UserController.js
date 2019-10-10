@@ -13,7 +13,7 @@ const userAuth = async (req, res, next) => {
         req.user = null;
         return res.sendStatus(401);
     }
-    const _user = await User.User.findById(token.id);
+    const _user = await User.User.findById(token.id, { createdAt: 0, updatedAt: 0, __v: 0, reset: 0 });
     if (!_user) {
         req.user = null;
 
@@ -25,18 +25,8 @@ const userAuth = async (req, res, next) => {
 
 async function GetUser(req, res) {
     try {
-        if (!req.params.id) {
-            throw "Esse Id de usuário não existe!";
-        }
-
-        var _id = mongoose.Types.ObjectId.isValid(req.params.id);
-
-        if (!_id) {
-            throw "Esse Id de usuário não é valido!";
-        }
-        const user = await User.User.findById(req.params.id, { _id: 0, createdAt: 0, updatedAt: 0, __v: 0, reset: 0 });
-
-        return res.json(user)
+        const { name, email, status, address } = req.user;
+        return res.json({ name, email, address, status });
     } catch (error) {
         console.log(error)
         res.sendStatus(403);
@@ -89,11 +79,13 @@ async function CreateUser(req, res) {
 
         const _user = await User.User.findOne({ email: data.email });
 
+        const { name, email, status, address } = _user;
+
         const { provider: providerData, ...userInfo } = data;
 
         if (!_user) {
             const user = await User.User.create({ ...userInfo, provider: [providerData] });
-            return res.json({ token: AuthServices.createToken(user) })
+            return res.json({ token: AuthServices.createToken(user), user: { name, email, status, address } })
         }
 
         const providerExist = _user.provider.find(
@@ -103,14 +95,16 @@ async function CreateUser(req, res) {
         );
 
         if (providerExist) {
-            return res.json({ token: AuthServices.createToken(_user) });
+            return res.json({ token: AuthServices.createToken(_user), user: { name, email, status, address } });
         }
 
         _user.provider.push(providerData);
 
         await _user.save();
 
-        return res.json({ token: AuthServices.createToken(_user) });
+
+
+        return res.json({ token: AuthServices.createToken(_user), user: { name, email, status, address } });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -118,11 +112,13 @@ async function CreateUser(req, res) {
 
 async function UpdateUser(req, res) {
     try {
-        if (!req.params.id) {
+        const userId = req.user._id;
+
+        if (!userId) {
             throw "Esse Id de usuário não existe!";
         }
 
-        var _id = mongoose.Types.ObjectId.isValid(req.params.id);
+        var _id = mongoose.Types.ObjectId.isValid(userId);
 
         if (!_id) {
             throw "Esse Id de usuário não é valido!";
@@ -130,7 +126,7 @@ async function UpdateUser(req, res) {
 
         const { name, password } = req.body;
 
-        let user = await User.User.findById(req.params.id, { _id: 0, createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 });
+        let user = await User.User.findById(userId, { _id: 0, createdAt: 0, updatedAt: 0, __v: 0, reset: 0 });
 
         if (name) {
             user.name = name;
@@ -140,7 +136,7 @@ async function UpdateUser(req, res) {
             user.password = password;
         }
 
-        await User.User.updateOne({ _id: req.params.id }, user, { new: true });
+        await User.User.updateOne({ _id: userId }, user, { new: true });
 
         user.address = undefined;
 

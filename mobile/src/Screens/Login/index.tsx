@@ -1,57 +1,92 @@
-import React from "react";
-import { StatusBar } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StatusBar, ActivityIndicator } from "react-native";
 
 import { Container, LoginImage, LoginButton, LoginText } from "./styles";
 
 // @ts-ignore
-import Logo from '../../../assets/icon.png';
+import Logo from "../../../assets/icon.png";
 
-import { GoogleApi } from '../../Services/Google';
-import { FacebookApi } from '../../Services/Facebook';
+import { GoogleApi } from "../../Services/Google";
+import { FacebookApi } from "../../Services/Facebook";
+
+import { Store } from "../../Services/SecureStore";
+
+import api from "../../Services";
 
 function Login({ navigation }) {
+    //Variables
+    const [loading, setLoading] = useState(false);
 
-  //Variables
+    //Action Functions
+    async function handleLoginProvider(provider) {
+        setLoading(true);
+        try {
+            let data = {
+                provider: "",
+                token: ""
+            };
 
-  //Action Functions
-  async function handleLoginFacebook() {
-    try {
-      const token = await FacebookApi.loginAsync();
+            switch (provider) {
+                case "FACEBOOK":
+                    data = {
+                        provider,
+                        token: await FacebookApi.loginAsync()
+                    };
+                    break;
+                case "GOOGLE":
+                    data = {
+                        provider,
+                        token: await GoogleApi.loginAsync()
+                    };
+                    break;
+            }
+            console.log(data);
+            const response = await api.post("/users", data);
+            const { token, user } = response.data;
 
-      console.log('token', token);
-    } catch (error) {
-      console.log('error', error);
+            Store.setItem("token", token);
+            Store.setItem("user", user);
+            if (token) {
+                navigation.navigate("Main");
+            }
+        } catch (error) {
+            console.log("Opss...", error);
+        } finally {
+            setLoading(false);
+        }
     }
-  }
 
-  async function handleLoginGoogle() {
-    try {
-      const token = await GoogleApi.loginAsync();
+    //Lifecycle Functions
+    useEffect(() => {
+        const token = Store.getItem("token");
+        if (token) {
+            navigation.navigate("Main");
+        }
+    }, []);
+    //Render Functions
 
-      await this.props.authStore.login(token, 'GOOGLE');
-    } catch (error) {
-      console.log('error', error);
-    }
-  }
+    return (
+        <Container>
+            <StatusBar hidden />
 
-  //Lifecycle Functions
+            <LoginImage source={Logo} resizeMode="center" />
+            <LoginButton
+                onPress={() => handleLoginProvider("FACEBOOK")}
+                buttonColor="blue"
+            >
+                <LoginText>Login com Facebook</LoginText>
+            </LoginButton>
 
-  //Render Functions
+            <LoginButton
+                onPress={() => handleLoginProvider("GOOGLE")}
+                buttonColor="red"
+            >
+                <LoginText>Login com Google</LoginText>
+            </LoginButton>
 
-  return (
-    <Container>
-      <StatusBar hidden />
-
-      <LoginImage source={Logo} resizeMode="center" />
-      <LoginButton onPress={handleLoginFacebook} buttonColor="blue">
-        <LoginText>Login com Facebook</LoginText>
-      </LoginButton>
-
-      <LoginButton onPress={handleLoginGoogle} buttonColor="red">
-        <LoginText>Login com Google</LoginText>
-      </LoginButton>
-    </Container>
-  );
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        </Container>
+    );
 }
 
 export default Login;
