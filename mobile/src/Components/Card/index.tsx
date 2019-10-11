@@ -4,7 +4,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import {
   Container,
-  Image,
+  CardImage,
   Price,
   Name,
   MeasureItem,
@@ -78,7 +78,7 @@ const Card: React.FC<IProps> = ({ product }) => {
           {qtd}
         </Badge>
       )}
-      <Image source={{ uri: product.image }} />
+      <CardImage source={{ uri: product.image }} />
       <MidCard>
         <Price>R$ {product.price}</Price>
         <Name>{product.name}</Name>

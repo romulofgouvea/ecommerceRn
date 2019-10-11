@@ -42,9 +42,9 @@ function Main({ navigation }) {
     //Render Functions
     const renderCardItem = ({ item }) => {
         if (item.empty) {
-            return <View style={{ flex: 1 }} />;
+            return <View key={item._id} style={{ flex: 1 }} />;
         }
-        return <Card product={item} />;
+        return <Card key={item._id} product={item} />;
     };
 
     function createRows(data, columns) {
@@ -52,7 +52,6 @@ function Main({ navigation }) {
         let lastRowElements = data.length - rows * columns;
         while (lastRowElements !== columns) {
             data.push({
-                // [D]
                 id: `empty-${lastRowElements}`,
                 name: `empty-${lastRowElements}`,
                 empty: true
@@ -84,7 +83,7 @@ function Main({ navigation }) {
                 showsVerticalScrollIndicator={false}
                 numColumns={columns}
                 data={createRows(products, columns)}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 renderItem={renderCardItem}
             />
         );

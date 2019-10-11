@@ -48,8 +48,8 @@ async function CreateUser(req, res) {
     const { token, provider } = req.body;
 
     const body = yup.object().shape({
-        token: yup.string().required(),
         provider: yup.string().oneOf(User.ENUM_PROVIDER).required(),
+        token: yup.string().required(),
     })
 
     try {
@@ -77,16 +77,16 @@ async function CreateUser(req, res) {
                 break;
         }
 
-        const _user = await User.User.findOne({ email: data.email });
-
-        const { name, email, status, address } = _user;
-
         const { provider: providerData, ...userInfo } = data;
+
+        const _user = await User.User.findOne({ email: data.email });
 
         if (!_user) {
             const user = await User.User.create({ ...userInfo, provider: [providerData] });
             return res.json({ token: AuthServices.createToken(user), user: { name, email, status, address } })
         }
+
+        const { name, email, status, address } = _user;
 
         const providerExist = _user.provider.find(
             el =>
@@ -94,18 +94,18 @@ async function CreateUser(req, res) {
                 el.type === data.provider.type,
         );
 
+
         if (providerExist) {
-            return res.json({ token: AuthServices.createToken(_user), user: { name, email, status, address } });
+            return res.status(200).json({ token: AuthServices.createToken(_user), user: { name, email, status, address } });
         }
 
         _user.provider.push(providerData);
 
         await _user.save();
 
-
-
         return res.json({ token: AuthServices.createToken(_user), user: { name, email, status, address } });
     } catch (error) {
+
         res.status(400).json({ message: error.message });
     }
 }

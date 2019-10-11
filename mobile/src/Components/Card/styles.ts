@@ -10,7 +10,7 @@ export const Container = styled.View`
   margin: 12px;
 `;
 
-export const Image = styled.Image`
+export const CardImage = styled.Image`
   height: 130;
   width: 100%;
   border-top-left-radius: 5px;
