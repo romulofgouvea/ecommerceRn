@@ -52,8 +52,8 @@ function Main({ navigation }) {
         let lastRowElements = data.length - rows * columns;
         while (lastRowElements !== columns) {
             data.push({
-                id: `empty-${lastRowElements}`,
-                name: `empty-${lastRowElements}`,
+                id: `empty-${Math.random()}`,
+                name: `empty-${Math.random()}`,
                 empty: true
             });
             lastRowElements += 1;
