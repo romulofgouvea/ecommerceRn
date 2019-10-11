@@ -40,12 +40,16 @@ function Login({ navigation }) {
                     };
                     break;
             }
-            console.log(data);
-            const response = await api.post("/users", data);
+            const { token: tokenData } = data;
+
+            const response = await api.post("/users", {
+                token: tokenData,
+                provider
+            });
             const { token, user } = response.data;
 
-            Store.setItem("token", token);
-            Store.setItem("user", user);
+            await Store.setItem("token", token);
+            await Store.setItem("user", user);
             if (token) {
                 navigation.navigate("Main");
             }
@@ -58,13 +62,18 @@ function Login({ navigation }) {
 
     //Lifecycle Functions
     useEffect(() => {
-        const token = Store.getItem("token");
-        if (token) {
-            navigation.navigate("Main");
-        }
-    }, []);
-    //Render Functions
+        const confirmToken = async () => {
+            let token = await Store.getItem("token");
 
+            if (token) {
+                navigation.navigate("Main");
+            }
+        };
+
+        Promise.all([confirmToken()]);
+    }, []);
+
+    //Render Functions
     return (
         <Container>
             <StatusBar hidden />
