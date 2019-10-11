@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, View, ActivityIndicator, Text } from "react-native";
 
@@ -13,6 +15,8 @@ function Main({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isSearch, setIsSearch] = useState(false);
 
+    const qty = useSelector(state => filterQty(state.cart.products));
+
     //Action Functions
     function handleMenu() {
         navigation.toggleDrawer();
@@ -22,7 +26,9 @@ function Main({ navigation }) {
         setIsSearch(!isSearch);
     }
 
-    function handleCart() {}
+    function handleCart() {
+        alert('')
+    }
 
     //Lifecycle Functions
     useEffect(() => {
@@ -39,10 +45,25 @@ function Main({ navigation }) {
         Promise.all([getProducts()]);
     }, []);
 
+    //Utils Functions
+    function filterQty(products) {
+        if (products) {
+            var resArr = [];
+            products.forEach(function (item) {
+                var isIdx = resArr.findIndex(x => x.name == item.name) <= -1;
+                if (isIdx) {
+                    resArr.push({ id: item._id });
+                }
+            });
+            return resArr.length;
+        }
+        return 0;
+    }
+
     //Render Functions
     const renderCardItem = ({ item }) => {
         if (item.empty) {
-            return <View key={item._id} style={{ flex: 1 }} />;
+            return <View key={item.id} style={{ flex: 1 }} />;
         }
         return <Card key={item._id} product={item} />;
     };
@@ -103,9 +124,9 @@ function Main({ navigation }) {
             <Icon onPress={handleSearch}>
                 <MaterialIcons name="search" size={20} color="#868686" />
             </Icon>
-            <Icon>
+            <Icon onPress={handleCart}>
                 <MaterialIcons name="local-mall" size={20} color="#868686" />
-                <Badge>1</Badge>
+                <Badge>{qty}</Badge>
             </Icon>
         </Header>
     );

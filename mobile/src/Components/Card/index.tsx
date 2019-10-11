@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Text, View } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from 'react-redux';
+
 
 import { BASE_URL } from "../../Services";
+import { Actions, Types } from "../../Store/ducks/cart";
 
 import {
     Container,
@@ -31,16 +34,26 @@ interface IProps {
 }
 
 const Card: React.FC<IProps> = ({ product }) => {
+    //Variables
+    const dispatch = useDispatch();
     const [qtd, setQtd] = useState(0);
+
+    //Action Functions
+    const addProduct = useCallback(
+        () => dispatch({ type: Types.ADD_CART, product }),
+        [dispatch]
+    );
 
     function handleClickAddCart() {
         setQtd(qtd + 1);
+        addProduct()
     }
 
     function handleClickRemoveCart() {
         qtd > 0 && setQtd(qtd - 1);
     }
 
+    //Render Functions
     const renderAddCard = () => {
         if (qtd > 0) {
             return (
