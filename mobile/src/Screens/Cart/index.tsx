@@ -19,12 +19,12 @@ function Cart({ navigation }) {
 
     //Action Functions
     const addProduct = useCallback(
-        () => dispatch(Actions.add_cart(product)),
+        () => dispatch(Actions.addCart(product)),
         [dispatch]
     );
 
     const removeProduct = useCallback(
-        () => dispatch(Actions.remove_cart(product)),
+        () => dispatch(Actions.deleteCart(product)),
         [dispatch]
     );
 

@@ -49,32 +49,24 @@ const Card: React.FC<IProps> = ({ product }) => {
     const dispatch = useDispatch();
 
     //Action Functions
-    const addProduct = useCallback(() => dispatch(Actions.add_cart(product)), [
-        dispatch
-    ]);
+    const addProduct = useCallback(
+        (p) => dispatch(Actions.addCart(p)),
+        [dispatch]
+    );
+
     const removeProduct = useCallback(
-        () => dispatch(Actions.remove_cart(product)),
+        (p) => dispatch(Actions.deleteCart(p)),
         [dispatch]
     );
 
     //Lifecycle
-    useEffect(() => {
-        setQtd(product.qty);
-
-        if (product.qty === product.stock) {
-            Alert.alert(
-                "Alerta",
-                "O estoque máximo desse produto é " + product.stock
-            )
-        }
-    }, [product])
 
     //Render Functions
     const renderAddCard = () => {
         if (product.qty > 0) {
             return (
                 <ContainerAddLessCart>
-                    <Icon onPress={() => removeProduct()}>
+                    <Icon onPress={() => removeProduct(product)}>
                         <MaterialCommunityIcons
                             name="minus-circle-outline"
                             size={22}
@@ -82,7 +74,7 @@ const Card: React.FC<IProps> = ({ product }) => {
                         />
                     </Icon>
                     <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
-                    <Icon onPress={() => addProduct()}>
+                    <Icon onPress={() => addProduct(product)}>
                         <MaterialCommunityIcons
                             name="plus-circle-outline"
                             size={22}
@@ -93,7 +85,7 @@ const Card: React.FC<IProps> = ({ product }) => {
             );
         }
         return (
-            <ButtonAddToCart onPress={() => addProduct()}>
+            <ButtonAddToCart onPress={() => addProduct(product)}>
                 <View style={{ padding: 8 }}>
                     <MaterialIcons
                         name="local-mall"

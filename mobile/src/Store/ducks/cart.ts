@@ -1,85 +1,57 @@
 //Types
 export const Types = {
-    ADD_CART: "@ecommerce/ADD_CART",
-    REMOVE_CART: "@ecommerce/REMOVE_CART"
+    CART_ADD: "@ecommerce/CART_ADD",
+    DELETE_CART: "@ecommerce/DELETE_CART"
 };
 
 //Actions
 export const Actions = {
-    add_cart(product) {
-        return { type: Types.ADD_CART, product };
+    addCart(product) {
+        return { type: Types.CART_ADD, product };
     },
-    remove_cart(product) {
-        return { type: Types.REMOVE_CART, product };
+    deleteCart(product) {
+        return { type: Types.DELETE_CART, product };
     }
 };
 
 //Reducers
 const INITIAL_STATE = {
-    products: [],
     products_cart: []
 };
 
 const cartReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case Types.ADD_CART:
-            action.product.qty = isNaN(action.product.qty) ? 1 : action.product.qty + 1;
-
-            let exists = state.products_cart.findIndex(x => x._id === action.product._id) > -1;
-
-            let copyProducts = [...state.products];
-
-            if (action.product.qty === action.product.stock) {
-                let existsInProducts = state.products.findIndex(x => x._id == action.product._id) <= -1;
-                copyProducts.splice(copyProducts.indexOf(existsInProducts, 1));
-            }
-
-            if (!exists) {
-                return {
-                    ...state,
-                    products: copyProducts,
-                    products_cart: [...state.products_cart, action.product]
-                };
+        case Types.CART_ADD:
+            let copyCart = [...state.products_cart];
+            if (!action.product.qty || isNaN(action.product.qty)) {
+                action.product.qty = 1
+            } else if (parseInt(action.product.qty) < parseInt(action.product.stock)) {
+                action.product.qty += 1
             } else {
-                state.products_cart[state.products_cart.indexOf(exists)] = action.product
-
-                return {
-                    ...state,
-                    products: copyProducts,
-                    products_cart: [...state.products_cart]
-                };
+                return state
             }
-        case Types.REMOVE_CART:
-            if (action.product.qty > 0)
+
+
+            let idxProduct = copyCart.findIndex(p => p._id === action.product._id);
+            if (idxProduct > -1) {
+                copyCart[idxProduct] = action.product;
+            } else {
+                copyCart.push(action.product);
+            }
+
+            return { ...state, products_cart: [...copyCart] };
+        case Types.DELETE_CART:
+            let copyCartInDelete = [...state.products_cart];
+
+            if (action.product.qty > 0) {
                 action.product.qty -= 1;
 
-            let existsIdx = state.products_cart.findIndex(x => x._id == action.product._id) > -1;
-
-            if (existsIdx) {
-                let copyArrCart = [...state.products_cart];
-                let copyArrProducts = [...state.products];
-
-                copyArrCart[copyArrCart.indexOf(existsIdx)] = action.product;
-
-                if (action.product.qty < 1) {
-                    copyArrCart.splice(copyArrCart.indexOf(existsIdx, 1));
-                }
-
-                if (action.product.qty !== action.product.stock) {
-                    let existsInProducts = state.products.findIndex(x => x._id == action.product._id) <= -1;
-                    if (existsInProducts) {
-                        copyArrProducts[copyArrProducts.indexOf(exists)] = action.product;
-                    }
-                }
-
-                return {
-                    ...state,
-                    products: [...copyArrProducts],
-                    products_cart: [...copyArrCart]
-                };
             } else {
-                return state;
+
             }
+
+
+
         default:
             return state;
     }
