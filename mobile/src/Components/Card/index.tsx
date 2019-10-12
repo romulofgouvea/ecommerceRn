@@ -40,12 +40,11 @@ const Card: React.FC<IProps> = ({ product }) => {
         if (obj) {
             return obj.qty;
         } else {
-            return qtd;
+            return 0;
         }
     })
 
     //Variables
-    const [qtd, setQtd] = useState(0);
     const dispatch = useDispatch();
 
     //Action Functions

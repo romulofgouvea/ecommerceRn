@@ -51,8 +51,6 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 action.product.qty = 0;
             }
 
-            console.log(action.product);
-
             return { ...state, products_cart: [...copyCartInDelete] };
         default:
             return state;

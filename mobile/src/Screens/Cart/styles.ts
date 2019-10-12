@@ -87,3 +87,17 @@ export const ButtonCheckout = styled.TouchableOpacity`
     align-items:center;
     border-radius: 5px;
 `;
+
+export const ContainerNoCart = styled.View`
+    background-color: #F5F5F5;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    flex:1;
+`;
+export const ContainerNoCartText = styled.View`
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+`;

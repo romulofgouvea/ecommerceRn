@@ -17,7 +17,6 @@ const stackMain = createStackNavigator(
         Cart
     },
     {
-        initialRouteName: 'Cart',
         defaultNavigationOptions: {
             header: null
         }
@@ -43,7 +42,7 @@ const Screens = createSwitchNavigator(
         App: MainDrawer
     },
     {
-        initialRouteName: "Login",
+        initialRouteName: "Welcome",
         defaultNavigationOptions: {
             header: null
         }

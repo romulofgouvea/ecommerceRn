@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, FlatList, View, Alert } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 
-import { Container, Header, Icon, ContainerLessMore, Card, CardImage, ContainerTexts, CardTitle, CardDesc, CardPrice, ButtonCheckout, Footer, FooterTotal } from "./styles";
+import { Container, Header, Icon, ContainerLessMore, Card, CardImage, ContainerTexts, CardTitle, CardDesc, CardPrice, ButtonCheckout, Footer, FooterTotal, ContainerNoCart, ContainerNoCartText } from "./styles";
 
 import { BASE_URL } from "../../Services";
 import { Actions } from "../../Store/ducks/cart";
@@ -15,31 +15,20 @@ function Cart({ navigation }) {
     const dispatch = useDispatch();
 
     const [subtotal, setSubtotal] = useState(0);
-    const [product, setProduct] = useState({});
 
     //Action Functions
     const addProduct = useCallback(
-        () => dispatch(Actions.addCart(product)),
+        (product) => dispatch(Actions.addCart(product)),
         [dispatch]
     );
 
     const removeProduct = useCallback(
-        () => dispatch(Actions.deleteCart(product)),
+        (product) => dispatch(Actions.deleteCart(product)),
         [dispatch]
     );
 
     function handleArrowBack() {
         navigation.goBack(null);
-    }
-
-    async function handleAddQtyProduct(item) {
-        await setProduct(item);
-        addProduct();
-    }
-
-    async function handleRemoveQtyProduct(item) {
-        await setProduct(item);
-        removeProduct();
     }
 
     //Lifecycle Functions
@@ -50,6 +39,8 @@ function Cart({ navigation }) {
                 val = val + (prod.qty * prod.price)
             }
             setSubtotal(val);
+        } else {
+            setSubtotal(0)
         }
     }, [cart]);
 
@@ -66,7 +57,7 @@ function Cart({ navigation }) {
     function renderContainerLessMore(product) {
         return (
             <ContainerLessMore>
-                <Icon onPress={() => handleRemoveQtyProduct(product)}>
+                <Icon onPress={() => removeProduct(product)}>
                     <MaterialCommunityIcons
                         name="minus-circle-outline"
                         size={22}
@@ -74,7 +65,7 @@ function Cart({ navigation }) {
                     />
                 </Icon>
                 <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
-                <Icon onPress={() => handleAddQtyProduct(product)}>
+                <Icon onPress={() => addProduct(product)}>
                     <MaterialCommunityIcons
                         name="plus-circle-outline"
                         size={22}
@@ -124,8 +115,30 @@ function Cart({ navigation }) {
     return (
         <Container>
             {renderHeader()}
-            {renderList()}
-            {renderFooter()}
+            {cart.length > 0
+                ? (
+                    <>
+                        {renderList()}
+                        {renderFooter()}
+                    </>
+                )
+                : (
+                    <ContainerNoCart>
+                        <Feather
+                            name="alert-octagon"
+                            size={90}
+                            color="#868686"
+                        />
+                        <ContainerNoCartText>
+                            <Text style={{ color: "#868686", fontSize: 22, paddingBottom: 8 }}>Nenhum produto adicionado :(</Text>
+                            <Text style={{ color: "#868686", fontSize: 16 }}>Vá até a pagina principal e adicione alguns produtos</Text>
+                        </ContainerNoCartText>
+                        <ButtonCheckout onPress={() => { navigation.goBack() }}>
+                            <Text style={{ color: "white" }}>Buscar produtos</Text>
+                        </ButtonCheckout>
+                    </ContainerNoCart>
+                )
+            }
         </Container>
     );
 }
