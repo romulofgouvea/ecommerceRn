@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StatusBar, ActivityIndicator, Alert } from "react-native";
 
 import { Container, LoginImage, LoginButton, LoginText } from "./styles";
@@ -70,10 +70,6 @@ function Login({ navigation }) {
     }
 
     //Lifecycle Functions
-    useEffect(() => {
-        if (!loading)
-            confirmToken()
-    }, [loading])
 
     //Render Functions
     return (

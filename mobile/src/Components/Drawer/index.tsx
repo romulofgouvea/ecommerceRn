@@ -20,32 +20,32 @@ const DrawerContainer: React.FC<Props> = props => {
     const [selected, setSelected] = useState('home');
 
     //Action Functions
-    function handleSelected(name) {
+    function handleSelected(name, pageName) {
         setSelected(name);
+        props.navigation.navigate(pageName);
     }
 
     async function handleLogout() {
         await Store.deleteItem("token");
-
         props.navigation.navigate("Login");
     }
 
     return (
         <Container>
-            <RowButton selected={selected === 'home' && true} onPress={() => { handleSelected('home') }}>
+            <RowButton selected={selected === 'home' && true} onPress={() => { handleSelected('home', 'Main') }}>
                 <MaterialIcons name="home" size={18} color={selected === 'home' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'home' && true}>Início</TextButton>
             </RowButton>
-            <RowButton selected={selected === 'local-mall' && true} onPress={() => { handleSelected('local-mall') }}>
+            <RowButton selected={selected === 'local-mall' && true} onPress={() => { handleSelected('local-mall', 'Orders') }}>
                 <MaterialIcons name="local-mall" size={20} color={selected === 'local-mall' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'local-mall' && true}>Meus pedidos</TextButton>
             </RowButton>
-            <RowButton selected={selected === 'location-on' && true} onPress={() => { handleSelected('location-on') }}>
+            <RowButton selected={selected === 'location-on' && true} onPress={() => { handleSelected('location-on', 'Address') }}>
                 <MaterialIcons name="location-on" size={20} color={selected === 'location-on' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'location-on' && true}>Meus endereços</TextButton>
             </RowButton>
 
-            <RowButton selected={selected === 'settings' && true} onPress={() => { handleSelected('settings') }}>
+            <RowButton selected={selected === 'settings' && true} onPress={() => { handleSelected('settings', 'Settings') }}>
                 <MaterialIcons name="settings" size={20} color={selected === 'settings' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'settings' && true}>Configurações</TextButton>
             </RowButton>
