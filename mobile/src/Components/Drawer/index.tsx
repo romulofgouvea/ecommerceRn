@@ -28,10 +28,18 @@ const DrawerContainer: React.FC<Props> = props => {
                 <TextButton selected>Início</TextButton>
             </RowButton>
             <RowButton>
-                {/* <MaterialIcons name="search" size={20} color="#868686" /> */}
-                <TextButton>Pedidos</TextButton>
+                <MaterialIcons name="search" size={20} color="#868686" />
+                <TextButton>Meus pedidos</TextButton>
+            </RowButton>
+            <RowButton>
+                <MaterialIcons name="search" size={20} color="#868686" />
+                <TextButton>Meus endereços</TextButton>
             </RowButton>
 
+            <RowButton>
+                <MaterialIcons name="search" size={20} color="#868686" />
+                <TextButton>Configurações</TextButton>
+            </RowButton>
             <RowButton onPress={handleLogout}>
                 <MaterialIcons
                     name="sentiment-dissatisfied"

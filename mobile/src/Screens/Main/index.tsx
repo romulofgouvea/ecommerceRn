@@ -15,7 +15,7 @@ function Main({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isSearch, setIsSearch] = useState(false);
 
-    const qty = useSelector(state => filterQty(state.cart.products));
+    const qty = useSelector(state => filterQty(state.cart.products_cart));
 
     //Action Functions
     function handleMenu() {
