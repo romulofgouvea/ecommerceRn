@@ -28,9 +28,8 @@ const cartReducer = (state = INITIAL_STATE, action) => {
             } else if (parseInt(action.product.qty) < parseInt(action.product.stock)) {
                 action.product.qty += 1
             } else {
-                return state
+                return state;
             }
-
 
             let idxProduct = copyCart.findIndex(p => p._id === action.product._id);
             if (idxProduct > -1) {
@@ -43,15 +42,18 @@ const cartReducer = (state = INITIAL_STATE, action) => {
         case Types.DELETE_CART:
             let copyCartInDelete = [...state.products_cart];
 
-            if (action.product.qty > 0) {
+            if (action.product.qty > 1) {
                 action.product.qty -= 1;
-
+                copyCartInDelete[idxProduct] = action.product;
             } else {
-
+                let idxProductDelete = copyCartInDelete.findIndex(p => p._id === action.product._id);
+                copyCartInDelete.splice(idxProductDelete, 1);
+                action.product.qty = 0;
             }
 
+            console.log(action.product);
 
-
+            return { ...state, products_cart: [...copyCartInDelete] };
         default:
             return state;
     }
