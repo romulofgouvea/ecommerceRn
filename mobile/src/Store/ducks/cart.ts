@@ -23,6 +23,8 @@ const INITIAL_STATE = {
 const cartReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case Types.ADD_CART:
+            action.product.qty = isNaN(action.product.qty) ? 1 : action.product.qty + 1;
+
             let exists = state.products_cart.findIndex(x => x._id === action.product._id) > -1;
 
             let copyProducts = [...state.products];
@@ -48,17 +50,20 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 };
             }
         case Types.REMOVE_CART:
+            if (action.product.qty > 0)
+                action.product.qty -= 1;
+
             let existsIdx = state.products_cart.findIndex(x => x._id == action.product._id) > -1;
 
             if (existsIdx) {
                 let copyArrCart = [...state.products_cart];
                 let copyArrProducts = [...state.products];
 
+                copyArrCart[copyArrCart.indexOf(existsIdx)] = action.product;
+
                 if (action.product.qty < 1) {
                     copyArrCart.splice(copyArrCart.indexOf(existsIdx, 1));
                 }
-
-                copyArrCart[copyArrCart.indexOf(exists)] = action.product;
 
                 if (action.product.qty !== action.product.stock) {
                     let existsInProducts = state.products.findIndex(x => x._id == action.product._id) <= -1;

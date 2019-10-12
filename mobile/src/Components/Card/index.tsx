@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Text, View, Alert } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,34 +57,24 @@ const Card: React.FC<IProps> = ({ product }) => {
         [dispatch]
     );
 
-    function handleClickAddCart() {
-        product.qty = isNaN(product.qty) ? 1 : product.qty + 1;
-        if (product.qty <= product.stock) {
-            addProduct();
-            setQtd(product.qty);
-        } else {
-            product.qty -= 1;//roolback
+    //Lifecycle
+    useEffect(() => {
+        setQtd(product.qty);
+
+        if (product.qty === product.stock) {
             Alert.alert(
                 "Alerta",
                 "O estoque máximo desse produto é " + product.stock
             )
         }
-    }
-
-    function handleClickRemoveCart() {
-        product.qty -= 1;
-        removeProduct();
-        setQtd(product.qty);
-    }
-
-    //Lifecycle
+    }, [product])
 
     //Render Functions
     const renderAddCard = () => {
         if (product.qty > 0) {
             return (
                 <ContainerAddLessCart>
-                    <Icon onPress={() => handleClickRemoveCart()}>
+                    <Icon onPress={() => removeProduct()}>
                         <MaterialCommunityIcons
                             name="minus-circle-outline"
                             size={22}
@@ -92,7 +82,7 @@ const Card: React.FC<IProps> = ({ product }) => {
                         />
                     </Icon>
                     <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
-                    <Icon onPress={() => handleClickAddCart()}>
+                    <Icon onPress={() => addProduct()}>
                         <MaterialCommunityIcons
                             name="plus-circle-outline"
                             size={22}
@@ -103,7 +93,7 @@ const Card: React.FC<IProps> = ({ product }) => {
             );
         }
         return (
-            <ButtonAddToCart onPress={() => handleClickAddCart()}>
+            <ButtonAddToCart onPress={() => addProduct()}>
                 <View style={{ padding: 8 }}>
                     <MaterialIcons
                         name="local-mall"

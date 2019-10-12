@@ -15,7 +15,6 @@ const loginAsync = async () => {
             scopes
         });
 
-        console.log("Result: ", result.type);
         if (result.type === "success") {
             return Promise.resolve(result.accessToken);
         }

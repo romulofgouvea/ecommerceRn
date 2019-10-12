@@ -27,7 +27,7 @@ function Main({ navigation }) {
     }
 
     function handleCart() {
-        alert('')
+        navigation.push('Cart');
     }
 
     //Lifecycle Functions
