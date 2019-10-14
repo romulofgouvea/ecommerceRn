@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import { useDispatch } from 'react-redux';
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card, AddressContent, AddressContainerActions, ContainerCards, AddressTitle, AddressDesc } from "./styles";
@@ -7,29 +8,37 @@ import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonChecko
 import { Store } from "../../Services/SecureStore";
 import api from "../../Services";
 
+import { Actions } from "../../Store/ducks/cart";
+
 function Address({ navigation }) {
 
     //Variables
+    const dispatch = useDispatch();
+
     const cart = navigation.getParam('cart', false);
-    const subtotal = navigation.getParam('subtotal', 0);
 
     const [isLoading, setIsLoading] = useState(true);
     const [address, setAddress] = useState([]);
     const [addressSelected, setAddressSelected] = useState({ _id: "" });
 
     //Action Functions
+    const storeAddress = useCallback(
+        (ad) => dispatch(Actions.addAddress(ad)),
+        [dispatch]
+    );
+
     function handleArrowBack() {
         navigation.goBack(null);
     }
 
     function handleAddPayMethod() {
-        navigation.push('PayMethod', { cart: true, subtotal })
+        storeAddress(addressSelected);
+        navigation.push('Payment', { addressSelected });
     }
 
     function handleSelectAddress(item) {
         if (item._id === addressSelected._id) {
             setAddressSelected({ _id: "" });
-            console.log("aaaa")
         } else {
             setAddressSelected(item);
         }
@@ -107,8 +116,7 @@ function Address({ navigation }) {
 
     const renderFooter = () => (
         <Footer>
-            <FooterTotal>Subtotal: R$ {subtotal}</FooterTotal>
-            <ButtonCheckout onPress={handleAddPayMethod}>
+            <ButtonCheckout onPress={handleAddPayMethod} disable={addressSelected._id === ""}>
                 <Text style={{ color: "white" }}>Selecionar metodo de pagamento</Text>
             </ButtonCheckout>
         </Footer>

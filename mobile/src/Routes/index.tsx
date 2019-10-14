@@ -11,6 +11,8 @@ import Cart from "../Screens/Cart";
 import Orders from "../Screens/Orders";
 import Address from "../Screens/Address";
 import Settings from "../Screens/Settings";
+import Payment from "../Screens/Payment";
+import Summary from "../Screens/Summary";
 
 import DrawerContainer from "../Components/Drawer";
 
@@ -20,7 +22,9 @@ const stackMain = createStackNavigator(
         Cart,
         Orders,
         Address,
-        Settings
+        Settings,
+        Payment,
+        Summary
     },
     {
         defaultNavigationOptions: {

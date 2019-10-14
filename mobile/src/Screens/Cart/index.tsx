@@ -12,9 +12,9 @@ function Cart({ navigation }) {
 
     //Variables
     const cart = useSelector(state => state.cart.products_cart);
-    const dispatch = useDispatch();
+    const total = useSelector(state => state.cart.total);
 
-    const [subtotal, setSubtotal] = useState(0);
+    const dispatch = useDispatch();
 
     //Action Functions
     const addProduct = useCallback(
@@ -28,7 +28,7 @@ function Cart({ navigation }) {
     );
 
     function handleAddAddress() {
-        navigation.push('Address', { cart: true, subtotal })
+        navigation.push('Address', { cart: true })
     }
 
     function handleArrowBack() {
@@ -36,22 +36,11 @@ function Cart({ navigation }) {
     }
 
     //Lifecycle Functions
-    useEffect(() => {
-        if (cart.length > 0) {
-            let val = 0;
-            for (let prod of cart) {
-                val = val + (prod.qty * prod.price)
-            }
-            setSubtotal(val);
-        } else {
-            setSubtotal(0)
-        }
-    }, [cart]);
 
     //Render Functions
     const renderFooter = () => (
         <Footer>
-            <FooterTotal>Subtotal: R$ {subtotal}</FooterTotal>
+            <FooterTotal>Subtotal: R$ {total}</FooterTotal>
             <ButtonCheckout onPress={handleAddAddress}>
                 <Text style={{ color: "white" }}>Selecionar Endereço</Text>
             </ButtonCheckout>

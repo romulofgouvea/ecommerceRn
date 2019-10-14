@@ -1,7 +1,9 @@
 //Types
 export const Types = {
-    CART_ADD: "@ecommerce/CART_ADD",
-    DELETE_CART: "@ecommerce/DELETE_CART"
+    CART_ADD: "@cart/CART_ADD",
+    DELETE_CART: "@cart/DELETE_CART",
+    ADD_ADDRESS: "@cart/ADD_ADDRESS",
+    PAY_METHOD: "@cart/PAY_METHOD",
 };
 
 //Actions
@@ -11,13 +13,34 @@ export const Actions = {
     },
     deleteCart(product) {
         return { type: Types.DELETE_CART, product };
+    },
+    addAddress(address) {
+        return { type: Types.ADD_ADDRESS, address };
+    },
+    addPayment(pay) {
+        return { type: Types.PAY_METHOD, pay };
     }
 };
 
 //Reducers
 const INITIAL_STATE = {
-    products_cart: []
+    products_cart: [],
+    total: 0,
+    address_selected: {},
+    pay_method: ""
 };
+
+//Utils
+const calculateTotal = (cart) => {
+    if (cart.length > 0) {
+        let val = 0;
+        for (let prod of cart) {
+            val = val + (prod.qty * prod.price)
+        }
+        return val;
+    }
+    return 0;
+}
 
 const cartReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
@@ -38,7 +61,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 copyCart.push(action.product);
             }
 
-            return { ...state, products_cart: [...copyCart] };
+            return { ...state, products_cart: [...copyCart], total: calculateTotal(copyCart) };
         case Types.DELETE_CART:
             let copyCartInDelete = [...state.products_cart];
 
@@ -51,7 +74,11 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 action.product.qty = 0;
             }
 
-            return { ...state, products_cart: [...copyCartInDelete] };
+            return { ...state, products_cart: [...copyCartInDelete], total: calculateTotal(copyCartInDelete) };
+        case Types.ADD_ADDRESS:
+            return { ...state, address_selected: action.address };
+        case Types.PAY_METHOD:
+            return { ...state, pay_method: action.pay };
         default:
             return state;
     }
