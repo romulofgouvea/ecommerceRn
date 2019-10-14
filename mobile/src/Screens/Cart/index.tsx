@@ -86,6 +86,7 @@ function Cart({ navigation }) {
             data={cart}
             keyExtractor={item => item._id}
             renderItem={renderCard}
+            extraData={cart}
         />
     )
 
