@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, FlatList } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card } from "./styles";
+import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card, AddressContent, AddressContainerActions, ContainerCards, AddressTitle, AddressDesc } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
 import api from "../../Services";
@@ -15,6 +15,7 @@ function Address({ navigation }) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [address, setAddress] = useState([]);
+    const [addressSelected, setAddressSelected] = useState({ _id: "" });
 
     //Action Functions
     function handleArrowBack() {
@@ -23,6 +24,19 @@ function Address({ navigation }) {
 
     function handleAddPayMethod() {
         navigation.push('PayMethod', { cart: true, subtotal })
+    }
+
+    function handleSelectAddress(item) {
+        if (item._id === addressSelected._id) {
+            setAddressSelected({ _id: "" });
+            console.log("aaaa")
+        } else {
+            setAddressSelected(item);
+        }
+    }
+
+    function handleEditAddress() {
+        alert('item \n' + JSON.stringify(addressSelected))
     }
 
     //Lifecycle Functions
@@ -49,11 +63,20 @@ function Address({ navigation }) {
     }, [navigation])
 
     //Render Functions
-    const _renderItem = ({ item }) => (
-        <Card>
-            <Text>{item.street}</Text>
-        </Card>
-    )
+    const _renderItem = ({ item }) => {
+        let colorBack = addressSelected && addressSelected._id === item._id ? "#4d7d13" : false;
+        return (
+            <Card background={colorBack} onPress={() => handleSelectAddress(item)}>
+                <AddressContent>
+                    <AddressTitle color={colorBack && 'white'}>{item.street}, nº {item.number}</AddressTitle>
+                    <AddressDesc color={colorBack && 'white'} >Complemento: {item.complement}</AddressDesc>
+                    <AddressDesc color={colorBack && 'white'} >Bairro: {item.neighborhood}, {item.city}</AddressDesc>
+                    <AddressDesc color={colorBack && 'white'} >Cep: {item.cep}</AddressDesc>
+                </AddressContent>
+                <AddressContainerActions></AddressContainerActions>
+            </Card>
+        )
+    }
 
     const renderCards = () => {
         if (isLoading) {
@@ -77,6 +100,7 @@ function Address({ navigation }) {
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item._id}
                 renderItem={_renderItem}
+                extraData={addressSelected}
             />
         );
     };
@@ -102,14 +126,24 @@ function Address({ navigation }) {
             <HeaderTitle style={{ flex: 1 }}>
                 <Text>{!cart ? "Meus endereços" : "Endereço de entrega"}</Text>
             </HeaderTitle>
-            <Icon></Icon>
+            <Icon onPress={handleEditAddress}>
+                {addressSelected._id !== "" && (
+                    <MaterialIcons
+                        name="edit"
+                        size={20}
+                        color="#868686"
+                    />
+                )}
+            </Icon>
         </Header>
     );
 
     return (
         <Container>
             {renderHeader()}
-            {renderCards()}
+            <ContainerCards>
+                {renderCards()}
+            </ContainerCards>
             {cart && renderFooter()}
         </Container>
     );

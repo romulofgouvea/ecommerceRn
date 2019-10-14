@@ -2,7 +2,13 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
     flex:1;
-    background-color: #F5F5F5
+    background-color: #F5F5F5;
+`;
+
+export const ContainerCards = styled.View`
+    flex:1;
+    background-color: #F5F5F5;
+    padding: 8px;
 `;
 
 export const Header = styled.View`
@@ -58,9 +64,48 @@ export const ButtonCheckout = styled.TouchableOpacity`
 `;
 
 
-export const Card = styled.View`
+export const Card = styled.TouchableOpacity`
     padding: 12px;
+    margin-bottom: 8px;
     flex-direction:row;
     flex:1;
-    background-color: white;
+    background-color: ${ props => props.background ? props.background : 'white'};
+    border-radius: 3px;
+`;
+
+export const AddressCheck = styled.TouchableOpacity`
+    height: 20;
+    width: 20;
+    border-radius: 10px;
+    border-width: 1;
+    border-color: #ACACAC;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const AddressChecked = styled.View`
+    width: 14;
+    height: 14;
+    border-radius: 7;
+    background-color: #4d7d13;
+`;
+
+export const AddressContent = styled.View`
+    flex:1
+`;
+
+export const AddressTitle = styled.Text`
+    color: ${ props => props.color ? props.color : "#4d7d13"};
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+`;
+
+export const AddressDesc = styled.Text`
+    color: ${ props => props.color ? props.color : "#ACACAC"};
+    font-size: 14px;
+`;
+
+export const AddressContainerActions = styled.View`
+    flex:1
 `;
