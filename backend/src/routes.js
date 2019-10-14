@@ -21,8 +21,9 @@ routes.post('/users', UserController.CreateUser);
 routes.put('/users/:id', UserController.UpdateUser);
 
 //Address
-routes.post('/address', AddressController.CreateAddress);
-routes.put('/address/:id', AddressController.UpdateAddress);
+routes.get('/address', UserController.userAuth, AddressController.GetAddress);
+routes.post('/address', UserController.userAuth, AddressController.CreateAddress);
+routes.put('/address/:id', UserController.userAuth, AddressController.UpdateAddress);
 
 //Products
 routes.get('/products', ProductController.GetAll);

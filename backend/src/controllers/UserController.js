@@ -13,7 +13,7 @@ const userAuth = async (req, res, next) => {
         req.user = null;
         return res.sendStatus(401);
     }
-    const _user = await User.User.findById(token.id, { createdAt: 0, updatedAt: 0, __v: 0, reset: 0 });
+    const _user = await User.User.findById(token.id, { createdAt: 0, updatedAt: 0, __v: 0, reset: 0 }).populate('address');
     if (!_user) {
         req.user = null;
 

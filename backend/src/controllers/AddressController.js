@@ -2,17 +2,36 @@ var mongoose = require('mongoose');
 const User = require('../models/User');
 const Address = require('../models/Address');
 
-async function CreateAddress(req, res) {
+async function GetAddress(req, res) {
     try {
-        const { user, address } = req.body;
-        const userId = user._id;
+        const userId = req.user._id;
         if (!userId) {
             throw "Esse Id de usuário não existe!";
         } else if (!mongoose.Types.ObjectId.isValid(userId)) {
             throw "Esse Id de usuário não é valido!";
         }
 
-        const userBd = await User.findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 })
+        const userBd = await User.User.findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 }).populate('address');
+
+        return res.json(userBd.address);
+
+    } catch (error) {
+        console.log(error)
+        res.sendStatus(403);
+    }
+}
+
+async function CreateAddress(req, res) {
+    try {
+        const { address } = req.body;
+        const userId = req.user._id;
+        if (!userId) {
+            throw "Esse Id de usuário não existe!";
+        } else if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw "Esse Id de usuário não é valido!";
+        }
+
+        const userBd = await User.User.findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 })
             .populate('address')
             .then(async userTemp => {
                 if (!userTemp.address)
@@ -31,7 +50,7 @@ async function CreateAddress(req, res) {
                 return userTemp;
             });
 
-        return res.json({ address: userBd.address });
+        return res.json(userBd.address);
     } catch (error) {
         console.log(error)
         res.sendStatus(403);
@@ -61,7 +80,7 @@ async function UpdateAddress(req, res) {
             throw "Esse Id de endereço não é valido!";
         }
 
-        const userBd = await User.find({ address: { _id: addressId } });
+        const userBd = await User.User.find({ address: { _id: addressId } });
 
         if (userBd.length > 0) {
             const ads = await Address.findById(addressId);
@@ -87,6 +106,7 @@ async function UpdateAddress(req, res) {
 }
 
 module.exports = {
+    GetAddress,
     CreateAddress,
     UpdateAddress
 }

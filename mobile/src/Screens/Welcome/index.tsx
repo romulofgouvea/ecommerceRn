@@ -17,6 +17,7 @@ function Welcome({ navigation }) {
             let token = await Store.getItem("token");
 
             if (token) {
+                console.log(token)
                 navigation.navigate("Main");
                 return;
             }

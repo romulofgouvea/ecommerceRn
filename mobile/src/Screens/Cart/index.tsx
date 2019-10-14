@@ -27,6 +27,10 @@ function Cart({ navigation }) {
         [dispatch]
     );
 
+    function handleAddAddress() {
+        navigation.push('Address', { cart: true, subtotal })
+    }
+
     function handleArrowBack() {
         navigation.goBack(null);
     }
@@ -48,8 +52,8 @@ function Cart({ navigation }) {
     const renderFooter = () => (
         <Footer>
             <FooterTotal>Subtotal: R$ {subtotal}</FooterTotal>
-            <ButtonCheckout>
-                <Text style={{ color: "white" }}>Adicionar o endereço e finalizar</Text>
+            <ButtonCheckout onPress={handleAddAddress}>
+                <Text style={{ color: "white" }}>Selecionar Endereço</Text>
             </ButtonCheckout>
         </Footer>
     )
