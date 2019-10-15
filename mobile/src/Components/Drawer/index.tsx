@@ -36,13 +36,15 @@ const DrawerContainer: React.FC<IProps> = props => {
                 <MaterialIcons name="home" size={18} color={selected === 'home' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'home' && true}>Início</TextButton>
             </RowButton>
-            <RowButton selected={selected === 'local-mall' && true} onPress={() => { handleSelected('local-mall', 'Orders') }}>
-                <MaterialIcons name="local-mall" size={20} color={selected === 'local-mall' ? "#FFF" : "#868686"} />
-                <TextButton selected={selected === 'local-mall' && true}>Meus pedidos</TextButton>
-            </RowButton>
+
             <RowButton selected={selected === 'location-on' && true} onPress={() => { handleSelected('location-on', 'Address') }}>
                 <MaterialIcons name="location-on" size={20} color={selected === 'location-on' ? "#FFF" : "#868686"} />
                 <TextButton selected={selected === 'location-on' && true}>Meus endereços</TextButton>
+            </RowButton>
+
+            <RowButton selected={selected === 'local-mall' && true} onPress={() => { handleSelected('local-mall', 'Orders') }}>
+                <MaterialIcons name="local-mall" size={20} color={selected === 'local-mall' ? "#FFF" : "#868686"} />
+                <TextButton selected={selected === 'local-mall' && true}>Meus pedidos</TextButton>
             </RowButton>
 
             <RowButton selected={selected === 'settings' && true} onPress={() => { handleSelected('settings', 'Settings') }}>
