@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import {
     NavigationScreenProp,
     NavigationState,
@@ -9,6 +10,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Container, RowButton, TextButton } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
+import { Actions } from "../../Store/ducks/main";
 
 interface IProps {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -17,11 +19,17 @@ interface IProps {
 const DrawerContainer: React.FC<IProps> = props => {
 
     //Variables
-    const [selected, setSelected] = useState('home');
+    const dispatch = useDispatch();
+    const route = useSelector(state => state.main.route);
 
     //Action Functions
-    function handleSelected(name, pageName) {
-        setSelected(name);
+    const setRoute = useCallback(
+        (page) => dispatch(Actions.setRouteDrawer(page)),
+        [dispatch]
+    );
+
+    function handleSelected(pageName) {
+        setRoute(pageName);
         props.navigation.navigate(pageName);
     }
 
@@ -30,27 +38,24 @@ const DrawerContainer: React.FC<IProps> = props => {
         props.navigation.navigate("Login");
     }
 
+    //Render Funtions
+    const lineButton = (nameRoute, textRoute, nameIcon) => (
+        <RowButton selected={route === nameRoute && true} onPress={() => { handleSelected(nameRoute) }}>
+            <MaterialIcons name={nameIcon} size={20} color={route === nameRoute ? "#FFF" : "#868686"} />
+            <TextButton selected={route === nameRoute && true}>{textRoute}</TextButton>
+        </RowButton>
+    )
+
     return (
         <Container>
-            <RowButton selected={selected === 'home' && true} onPress={() => { handleSelected('home', 'Main') }}>
-                <MaterialIcons name="home" size={18} color={selected === 'home' ? "#FFF" : "#868686"} />
-                <TextButton selected={selected === 'home' && true}>Início</TextButton>
-            </RowButton>
+            {lineButton('Main', 'Início', 'home')}
 
-            <RowButton selected={selected === 'location-on' && true} onPress={() => { handleSelected('location-on', 'Address') }}>
-                <MaterialIcons name="location-on" size={20} color={selected === 'location-on' ? "#FFF" : "#868686"} />
-                <TextButton selected={selected === 'location-on' && true}>Meus endereços</TextButton>
-            </RowButton>
+            {lineButton('Address', 'Meus endereços', 'location-on')}
 
-            <RowButton selected={selected === 'local-mall' && true} onPress={() => { handleSelected('local-mall', 'Orders') }}>
-                <MaterialIcons name="local-mall" size={20} color={selected === 'local-mall' ? "#FFF" : "#868686"} />
-                <TextButton selected={selected === 'local-mall' && true}>Meus pedidos</TextButton>
-            </RowButton>
+            {lineButton('Orders', 'Meus pedidos', 'local-mall')}
 
-            <RowButton selected={selected === 'settings' && true} onPress={() => { handleSelected('settings', 'Settings') }}>
-                <MaterialIcons name="settings" size={20} color={selected === 'settings' ? "#FFF" : "#868686"} />
-                <TextButton selected={selected === 'settings' && true}>Configurações</TextButton>
-            </RowButton>
+            {lineButton('Settings', 'Configurações', 'settings')}
+
             <RowButton onPress={handleLogout}>
                 <MaterialIcons
                     name="sentiment-dissatisfied"

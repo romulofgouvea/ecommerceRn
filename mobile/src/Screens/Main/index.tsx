@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, View, ActivityIndicator, Text } from "react-native";
@@ -8,18 +8,27 @@ import { Card, Badge, SerachBar } from "../../Components";
 
 import { Container, Header, Icon, ImageHeader, ContainerCards } from "./styles";
 import api from "../../Services";
+import { Actions } from "../../Store/ducks/main";
+
 
 function Main({ navigation }) {
+
     //Variables
+    const dispatch = useDispatch();
     const [copyProducts, setCopyProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSearch, setIsSearch] = useState(false);
-
     const qty = useSelector(state => filterQty(state.cart.products_cart));
 
     //Action Functions
+    const setRoute = useCallback(
+        (page) => dispatch(Actions.setRouteDrawer(page)),
+        [dispatch]
+    );
+
     function handleMenu() {
+        setRoute('Main');
         navigation.toggleDrawer();
     }
 

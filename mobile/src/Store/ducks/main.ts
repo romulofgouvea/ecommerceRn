@@ -1,7 +1,8 @@
 //Types
 export const Types = {
-    PRODUCTS_ADD: "@ecommerce/PRODUCTS_ADD",
-    PRODUCTS_DELETE: "@ecommerce/PRODUCTS_DELETE",
+    PRODUCTS_ADD: "@main/PRODUCTS_ADD",
+    PRODUCTS_DELETE: "@main/PRODUCTS_DELETE",
+    MAIN_DRAWER: "@main/MAIN_DRAWER",
 };
 
 //Actions
@@ -11,13 +12,16 @@ export const Actions = {
     },
     deleteProducts() {
         return { type: Types.PRODUCTS_DELETE };
+    },
+    setRouteDrawer(route) {
+        return { type: Types.MAIN_DRAWER, route };
     }
 };
 
 //Reducers
 const INITIAL_STATE = {
     toggle_drawer: false,
-    page_open: 'home',
+    route: 'Main',
     products: [],
 };
 
@@ -27,6 +31,8 @@ const mainReducer = (state = INITIAL_STATE, action) => {
             return { ...state, products: action.list }
         case Types.PRODUCTS_DELETE:
             return { ...state, products: [] }
+        case Types.MAIN_DRAWER:
+            return { ...state, route: action.route }
         default:
             return state;
     }
