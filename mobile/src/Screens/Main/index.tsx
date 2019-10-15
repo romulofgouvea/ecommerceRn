@@ -33,6 +33,7 @@ function Main({ navigation }) {
     }
 
     function handleSearch() {
+        setProducts(copyProducts);
         setIsSearch(!isSearch);
     }
 

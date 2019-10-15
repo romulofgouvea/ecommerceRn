@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, TextInput } from "react-native";
 import { useDispatch } from 'react-redux';
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card, AddressContent, AddressContainerActions, ContainerCards, AddressTitle, AddressDesc } from "./styles";
+import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card, AddressContent, AddressContainerActions, ContainerCards, AddressTitle, AddressDesc, ContainerEdit, AddressHeaderInput, AddressInput, IconDelete } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
 import api from "../../Services";
@@ -18,8 +18,10 @@ function Address({ navigation }) {
     const cart = navigation.getParam('cart', false);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [isEdit, setIsEdit] = useState(false);
     const [address, setAddress] = useState([]);
-    const [addressSelected, setAddressSelected] = useState({ _id: "" });
+    const [addressSelected, setAddressSelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
+    const [copySelected, setCopySelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
 
     //Action Functions
     const storeAddress = useCallback(
@@ -28,7 +30,11 @@ function Address({ navigation }) {
     );
 
     function handleArrowBack() {
-        navigation.goBack(null);
+        if (!isEdit) {
+            navigation.goBack(null);
+        } else {
+            setIsEdit(!isEdit);
+        }
     }
 
     function handleAddPayMethod() {
@@ -38,14 +44,59 @@ function Address({ navigation }) {
 
     function handleSelectAddress(item) {
         if (item._id === addressSelected._id) {
-            setAddressSelected({ _id: "" });
+            setAddressSelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
+            setCopySelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
         } else {
             setAddressSelected(item);
+            setCopySelected(item);
         }
     }
 
     function handleEditAddress() {
-        alert('item \n' + JSON.stringify(addressSelected))
+        setIsEdit(!isEdit);
+    }
+
+    async function handleSaveEdit(newAddress) {
+
+        let token = await Store.getItem("token");
+
+        let config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        await api.put(`/address/${newAddress._id}`, newAddress, config)
+            .then(res => {
+                if (res.status === 200) {
+                    setIsEdit(false);
+                }
+            })
+            .catch(err => console.log(err));
+
+    }
+
+    async function removeAddress(address) {
+
+
+        let token = await Store.getItem("token");
+
+        let config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        address.status = 1;
+
+        await api.put(`/address/${address._id}`, address, config)
+            .then(res => {
+                if (res.status === 200) {
+                    setIsEdit(false);
+                }
+            })
+            .catch(err => console.log(err));
+
     }
 
     //Lifecycle Functions
@@ -67,11 +118,33 @@ function Address({ navigation }) {
                 .catch(err => console.log(err));
         };
 
-        Promise.all([getAddress()]);
+        if (!isEdit)
+            Promise.all([getAddress()]);
 
-    }, [navigation])
+    }, [navigation, isEdit])
 
     //Render Functions
+    const renderEditAddress = () => {
+
+        return (
+            <ContainerEdit>
+                <AddressHeaderInput>Rua/Avenida</AddressHeaderInput>
+                <AddressInput value={copySelected.street} onChangeText={t => { setCopySelected({ ...copySelected, street: t }) }} ></AddressInput>
+                <AddressHeaderInput>Número</AddressHeaderInput>
+                <AddressInput value={copySelected.number} onChangeText={t => { setCopySelected({ ...copySelected, number: t }) }}></AddressInput>
+                <AddressHeaderInput>Bairro</AddressHeaderInput>
+                <AddressInput value={copySelected.neighborhood} onChangeText={t => { setCopySelected({ ...copySelected, neighborhood: t }) }}></AddressInput>
+                <AddressHeaderInput>Cidade: </AddressHeaderInput>
+                <AddressInput value={copySelected.city} onChangeText={t => { setCopySelected({ ...copySelected, city: t }) }}></AddressInput>
+                <AddressHeaderInput>CEP: </AddressHeaderInput>
+                <AddressInput value={copySelected.cep} onChangeText={t => { setCopySelected({ ...copySelected, cep: t }) }}></AddressInput>
+                <ButtonCheckout onPress={() => handleSaveEdit(copySelected)}>
+                    <Text style={{ color: "white" }}>Salvar</Text>
+                </ButtonCheckout>
+            </ContainerEdit>
+        )
+    }
+
     const _renderItem = ({ item }) => {
         let colorBack = addressSelected && addressSelected._id === item._id ? "#4d7d13" : false;
         return (
@@ -82,7 +155,13 @@ function Address({ navigation }) {
                     <AddressDesc color={colorBack && 'white'} >Bairro: {item.neighborhood}, {item.city}</AddressDesc>
                     <AddressDesc color={colorBack && 'white'} >Cep: {item.cep}</AddressDesc>
                 </AddressContent>
-                <AddressContainerActions></AddressContainerActions>
+                <IconDelete onPress={() => removeAddress(item)}>
+                    <MaterialIcons
+                        name="remove-circle"
+                        size={20}
+                        color="red"
+                    />
+                </IconDelete>
             </Card>
         )
     }
@@ -149,10 +228,15 @@ function Address({ navigation }) {
     return (
         <Container>
             {renderHeader()}
-            <ContainerCards>
-                {renderCards()}
-            </ContainerCards>
-            {cart && renderFooter()}
+            {!isEdit
+                ? (
+                    <ContainerCards>
+                        {renderCards()}
+                    </ContainerCards>
+                )
+                : renderEditAddress()
+            }
+            {cart && !isEdit && renderFooter()}
         </Container>
     );
 }

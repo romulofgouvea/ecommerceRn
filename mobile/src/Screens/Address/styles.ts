@@ -91,7 +91,7 @@ export const AddressChecked = styled.View`
 `;
 
 export const AddressContent = styled.View`
-    flex:1
+    flex:1;
 `;
 
 export const AddressTitle = styled.Text`
@@ -107,5 +107,37 @@ export const AddressDesc = styled.Text`
 `;
 
 export const AddressContainerActions = styled.View`
-    flex:1
+    flex:1;
+`;
+
+export const ContainerEdit = styled.View`
+    flex:1;
+    margin: 16px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 5px;
+`;
+
+export const AddressHeaderInput = styled.Text`
+    color: ${ props => props.color ? props.color : "#4d7d13"};
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 500;
+`;
+
+export const AddressInput = styled.TextInput`
+    background-color: white;
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    border-width:1px;
+    border-color: #4d7d13;
+    border-radius: 5px;
+    padding: 8px 16px;
+`;
+
+export const IconDelete = styled.TouchableOpacity`
+    padding: 8px;
+    right: 0;
+    top: 0;
 `;

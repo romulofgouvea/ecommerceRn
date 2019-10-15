@@ -60,13 +60,11 @@ async function CreateAddress(req, res) {
 async function UpdateAddress(req, res) {
     try {
         const addressId = req.params.id;
-        const { user, address } = req.body;
-        const userId = user._id;
+        const userId = req.user._id;
         if (!userId) {
             throw "Esse Id de usuário não existe!";
-        }
-        if (!addressId) {
-            throw "Esse Id de endereço não existe!";
+        } else if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw "Esse Id de usuário não é valido!";
         }
 
         var _id = mongoose.Types.ObjectId.isValid(userId);
@@ -80,12 +78,12 @@ async function UpdateAddress(req, res) {
             throw "Esse Id de endereço não é valido!";
         }
 
-        const userBd = await User.User.find({ address: { _id: addressId } });
+        const userBd = await User.User.findOne({ address: { _id: addressId } });
 
-        if (userBd.length > 0) {
+        if (userBd && userBd.address.length > 0) {
             const ads = await Address.findById(addressId);
 
-            const { street, number, complement, cep, neighborhood, state, city } = address;
+            const { street, number, complement, cep, neighborhood, state, city } = req.body;
 
             ads.street = street;
             ads.number = number;

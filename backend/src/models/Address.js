@@ -26,6 +26,11 @@ const AddressSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    status: {
+        type: Number,
+        enum: [0, 1], //0 - ativado 1 - desativado
+        default: 0
+    },
 }, {
     timestamps: true
 })
