@@ -10,11 +10,11 @@ import { Container, RowButton, TextButton } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
 
-interface Props {
+interface IProps {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
-const DrawerContainer: React.FC<Props> = props => {
+const DrawerContainer: React.FC<IProps> = props => {
 
     //Variables
     const [selected, setSelected] = useState('home');

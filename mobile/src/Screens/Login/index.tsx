@@ -57,18 +57,6 @@ function Login({ navigation }) {
         }
     }
 
-    async function confirmToken() {
-        try {
-            let token = await Store.getItem("token");
-
-            if (token) {
-                navigation.navigate("Main");
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
     //Lifecycle Functions
 
     //Render Functions
