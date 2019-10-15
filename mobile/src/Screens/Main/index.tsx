@@ -11,6 +11,7 @@ import api from "../../Services";
 
 function Main({ navigation }) {
     //Variables
+    const [copyProducts, setCopyProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSearch, setIsSearch] = useState(false);
@@ -30,6 +31,15 @@ function Main({ navigation }) {
         navigation.push('Cart');
     }
 
+    function handleQuerySearch(query) {
+        let filter = copyProducts.filter(fil => fil.name.toLowerCase().includes(query.toLowerCase()) && fil);
+        if (query || filter) {
+            setProducts(filter);
+        } else {
+            setProducts(copyProducts);
+        }
+    }
+
     //Lifecycle Functions
     useEffect(() => {
         const getProducts = async () => {
@@ -37,6 +47,7 @@ function Main({ navigation }) {
                 .get("/products")
                 .then(res => {
                     setProducts(res.data);
+                    setCopyProducts(res.data);
                     setIsLoading(false);
                 })
                 .catch(err => err);
@@ -134,7 +145,7 @@ function Main({ navigation }) {
     return (
         <Container>
             {renderHeader()}
-            {isSearch && <SerachBar />}
+            {isSearch && <SerachBar query={handleQuerySearch} />}
             <ContainerCards>{renderCards()}</ContainerCards>
         </Container>
     );
