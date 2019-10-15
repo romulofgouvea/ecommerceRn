@@ -8,7 +8,7 @@ const options = {
 
 function startMongoDb(enviroment = 'dev') {
     if (enviroment === 'dev') {
-        mongoose.connect('mongodb://localhost:27017/ecommerce', options)
+        mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', options)
             .then(() => console.log("Database ok :)"))
             .catch((err) => console.log("MONGODB ", err));
         return;

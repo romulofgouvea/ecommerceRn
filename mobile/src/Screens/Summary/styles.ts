@@ -25,10 +25,13 @@ export const Icon = styled.TouchableOpacity`
 `;
 
 export const ContainerCard = styled.View`
-    margin: 8px;
+    margin: 16px;
+`;
+export const ContainerCardWhite = styled.View`
     padding: ${props => props.p ? props.p : 0}px;
     background-color: white;
 `;
+
 
 //Panel Cart
 export const Card = styled.View`

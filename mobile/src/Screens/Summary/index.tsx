@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { ScrollView, Text, FlatList, View } from "react-native";
+import { ScrollView, Text, FlatList, View, Alert } from "react-native";
 
-import { Container, ContainerCard, Footer, ButtonCheckout, Card, CardImage, CardTitle, CardDesc, CardPrice, CardTexts, CardTotal, Header, Icon, HeaderTitle, ContainerPrice, CardQty, AddressContent, AddressTitle, AddressDesc } from "./styles";
+import { Container, ContainerCard, Footer, ButtonCheckout, Card, CardImage, CardTitle, CardDesc, CardPrice, CardTexts, CardTotal, Header, Icon, HeaderTitle, ContainerPrice, CardQty, AddressContent, AddressTitle, AddressDesc, ContainerCardWhite } from "./styles";
 import { BASE_URL } from "../../Services";
 import { MaterialIcons } from "@expo/vector-icons";
 
+import api from "../../Services";
+import { Store } from "../../Services/SecureStore";
+
+import { Actions } from '../../Store/ducks/cart';
 
 function Summary({ navigation }) {
 
@@ -18,11 +22,62 @@ function Summary({ navigation }) {
     const payment = useSelector(state => state.cart.pay_method);
 
     //Action Functions
+    const clearAll = useCallback(
+        () => dispatch(Actions.clearAll()),
+        [dispatch]
+    )
+
     function handleArrowBack() {
         navigation.goBack(null);
     }
 
-    function handleClickFinishOrder() {
+    async function handleClickFinishOrder() {
+
+        try {
+            let token = await Store.getItem("token");
+            let config = {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+            let data = {
+                products: cart,
+                address: address
+            }
+
+            if (token) {
+                const res = await api.post("/orders", data, config)
+                if (res.status === 200) {
+                    Alert.alert(
+                        'Pedido Feito!',
+                        'O seu pedido foi enviado, agora é so esperar :)\n Caso queira olhar seu pedido, olhe o Menu "Meus Pedidos"',
+                        [
+                            {
+                                text: 'Agora vou esperar chegar :)', onPress: () => {
+                                    clearAll()
+                                    navigation.navigate('Main');
+                                    return;
+                                }
+                            }
+                        ],
+                        { cancelable: false },
+                    );
+                } else {
+                    Alert.alert(
+                        'Ops...',
+                        ' O seu pedido nao foi concluido :(',
+                        [
+                            {
+                                text: 'Vou tentar denovo :(', onPress: () => {
+                                    navigation.navigate('Main');
+                                    return;
+                                }
+                            }
+                        ]
+                    );
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
 
     }
 
@@ -30,23 +85,25 @@ function Summary({ navigation }) {
     console.log(address)
 
     //Render Functions
-    const _renderItemCart = ({ item }) => (
-        <Card key={item._id}>
-            <CardImage source={{ uri: `${BASE_URL}/files/${item.image}` }} />
-            <CardTexts>
-                <CardTitle>{item.name}</CardTitle>
-                <CardDesc>{item.measure}</CardDesc>
-                <CardPrice>R$ {item.price}</CardPrice>
-            </CardTexts>
-            <Text>x <CardQty>{item.qty}</CardQty></Text>
-        </Card>
-    )
+    const _renderItemCart = ({ item }) => {
+        return (
+            <Card key={item._id}>
+                <CardImage source={{ uri: `${BASE_URL}/files/${item.image}` }} />
+                <CardTexts>
+                    <CardTitle>{item.name}</CardTitle>
+                    <CardDesc>Em {item.measure}</CardDesc>
+                    <CardPrice>R$ {item.price}</CardPrice>
+                </CardTexts>
+                <Text>x <CardQty>{item.qty}</CardQty></Text>
+            </Card>
+        )
+    }
 
     const renderItensCart = () => (
         <FlatList
             data={cart}
             showsHorizontalScrollIndicator={false}
-            keyExtractor={item => item.toString()}
+            keyExtractor={item => item._id}
             renderItem={_renderItemCart}
             extraData={cart}
         />
@@ -54,7 +111,7 @@ function Summary({ navigation }) {
 
     const renderItensTotal = () => (
         <CardTotal bgColor="#4d7d13">
-            <Text style={{ color: 'white', fontSize: 16 }}>Valor total da compra:</Text>
+            <Text style={{ color: 'white', fontSize: 16 }}>Valor total:</Text>
             <Text style={{ color: 'white', fontSize: 16 }}>R$ {total}</Text>
         </CardTotal>
     )
@@ -70,8 +127,7 @@ function Summary({ navigation }) {
 
     const renderItensPayment = () => (
         <>
-            <Text style={{ fontSize: 18, paddingBottom: 12 }}>Metodo de Pagamento</Text>
-            <Text style={{ fontSize: 15 }}>{payment}</Text>
+            <Text style={{ fontSize: 15, paddingBottom: 12 }}>Pagamento com: <Text style={{ fontSize: 18, color: "#4d7d13" }}>{payment}</Text></Text>
         </>
     )
 
@@ -101,18 +157,29 @@ function Summary({ navigation }) {
     return (
         <Container>
             {renderHeader()}
-            <ScrollView>
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 72 }}
+            >
                 <ContainerCard>
-                    {renderItensCart()}
-                    {renderItensTotal()}
+                    <Text style={{ fontSize: 18, paddingBottom: 8, color: "#ACACAC" }}>Meus produtos escohidos</Text>
+                    <ContainerCardWhite>
+                        {renderItensCart()}
+                        {renderItensTotal()}
+                    </ContainerCardWhite>
                 </ContainerCard>
 
-                <ContainerCard p={8}>
-                    {renderItensAddress()}
+                <ContainerCard>
+                    <Text style={{ fontSize: 18, paddingBottom: 8, color: "#ACACAC" }}>Meu Endereço pra entrega</Text>
+                    <ContainerCardWhite p={8}>
+                        {renderItensAddress()}
+                    </ContainerCardWhite>
                 </ContainerCard>
 
-                <ContainerCard p={8}>
-                    {renderItensPayment()}
+                <ContainerCard>
+                    <Text style={{ fontSize: 18, paddingBottom: 8, color: "#ACACAC" }}>Metodo de Pagamento</Text>
+                    <ContainerCardWhite p={8}>
+                        {renderItensPayment()}
+                    </ContainerCardWhite>
                 </ContainerCard>
             </ScrollView>
             {renderFooter()}

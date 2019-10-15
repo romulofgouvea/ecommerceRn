@@ -2,17 +2,22 @@ var mongoose = require('mongoose');
 
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const Address = require('../models/Address');
 
 async function GetAll(req, res) {
     try {
-        const userId = req.params.userId;
+        const userId = req.user._id;
         if (!userId) {
-            throw "Esse usuário não existe!";
+            throw "Esse Id de usuário não existe!";
         } else if (!mongoose.Types.ObjectId.isValid(userId)) {
-            throw "Esse usuário não é valido!";
+            throw "Esse Id de usuário não é valido!";
         }
 
-        const order = await Order.find({ user: { $eq: { _id: userId } } }, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 }).populate('products', '-_id -__v -createdAt -updatedAt').sort('-createdAt');
+        const order = await Order.find({ user: { $eq: { _id: userId } } }, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+            .populate('address')
+            .populate('products', '-_id -__v -createdAt -updatedAt')
+            .sort('-createdAt')
+            .exec();
         return res.json(order);
     } catch (error) {
         res.sendStatus(403);
@@ -37,21 +42,35 @@ async function GetOrder(req, res) {
 
 async function CreateOrder(req, res) {
     try {
-        const { user, products } = req.body;
+        const { products, address } = req.body;
 
-        if (!user._id) {
-            throw "Esse usuário não existe!";
-        } else if (!mongoose.Types.ObjectId.isValid(user._id)) {
-            throw "Esse usuário não é valido!";
+        const userId = req.user._id;
+        if (!userId) {
+            throw "Esse Id de usuário não existe!";
+        } else if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw "Esse Id de usuário não é valido!";
         }
 
         for (let p of products) {
             if (!mongoose.Types.ObjectId.isValid(p._id)) {
                 throw "Esse produto não é valido!";
             }
+            p = { _id: p._id };
         }
 
-        const order = await Order.create({ user, products });
+        const existsAddress = await Address.findById(address._id);
+
+        if (!existsAddress) {
+            res.sendStatus(403);
+        }
+
+        const productsBd = await Product.find({ _id: { "$in": products } });
+
+        const order = await Order.create({
+            user: req.user,
+            products: productsBd.map(el => el._id),
+            address: existsAddress
+        });
 
         return res.json(order);
     } catch (error) {

@@ -9,7 +9,7 @@ export const Header = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    min-height: 44;
+    min-height: 54;
     background-color: white;
     padding: 0 8px;
 `;
@@ -25,7 +25,7 @@ export const Icon = styled.TouchableOpacity`
 
 export const ContainerCards = styled.View`
     flex:1;
-    padding: 16px;
+    padding: 8px;
 `;
 
 export const CardEmpty = styled.View`

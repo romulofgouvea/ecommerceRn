@@ -32,9 +32,9 @@ routes.post('/products', upload.single('image'), ProductController.CreateProduct
 routes.put('/products/:id', upload.single('image'), ProductController.UpdateProduct);
 
 //Orders
-routes.get('/orders/user/:userId', OrderController.GetAll);
+routes.get('/orders/user', UserController.userAuth, OrderController.GetAll);
 routes.get('/orders/:id', OrderController.GetOrder);
-routes.post('/orders', OrderController.CreateOrder);
+routes.post('/orders', UserController.userAuth, OrderController.CreateOrder);
 routes.put('/orders/:id', OrderController.UpdateOrder);
 
 module.exports = routes;

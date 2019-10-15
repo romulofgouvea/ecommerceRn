@@ -4,6 +4,7 @@ export const Types = {
     DELETE_CART: "@cart/DELETE_CART",
     ADD_ADDRESS: "@cart/ADD_ADDRESS",
     PAY_METHOD: "@cart/PAY_METHOD",
+    CLEAR_ALL: "@cart/CLEAR_ALL",
 };
 
 //Actions
@@ -19,6 +20,9 @@ export const Actions = {
     },
     addPayment(pay) {
         return { type: Types.PAY_METHOD, pay };
+    },
+    clearAll() {
+        return { type: Types.CLEAR_ALL };
     }
 };
 
@@ -79,6 +83,8 @@ const cartReducer = (state = INITIAL_STATE, action) => {
             return { ...state, address_selected: action.address };
         case Types.PAY_METHOD:
             return { ...state, pay_method: action.pay };
+        case Types.CLEAR_ALL:
+            return INITIAL_STATE;
         default:
             return state;
     }
