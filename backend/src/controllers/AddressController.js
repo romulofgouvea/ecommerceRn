@@ -11,7 +11,12 @@ async function GetAddress(req, res) {
             throw "Esse Id de usuário não é valido!";
         }
 
-        const userBd = await User.User.findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 }).populate('address');
+        const userBd = await User.User
+            .findById(userId, { createdAt: 0, updatedAt: 0, __v: 0, password: 0, reset: 0 })
+            .populate({
+                path: 'address',
+                match: { status: { $eq: 0 } }
+            });
 
         return res.json(userBd.address);
 
@@ -81,9 +86,9 @@ async function UpdateAddress(req, res) {
         const userBd = await User.User.findOne({ address: { _id: addressId } });
 
         if (userBd && userBd.address.length > 0) {
-            const ads = await Address.findById(addressId);
+            let ads = await Address.findById(addressId);
 
-            const { street, number, complement, cep, neighborhood, state, city } = req.body;
+            const { street, number, complement, cep, neighborhood, state, city, status } = req.body;
 
             ads.street = street;
             ads.number = number;
@@ -92,14 +97,18 @@ async function UpdateAddress(req, res) {
             ads.neighborhood = neighborhood;
             ads.state = state;
             ads.city = city;
+            ads.status = status;
 
             await ads.save();
+            if (ads.status === 1)
+                ads = {}
+
             return res.json(ads);
         }
-        res.sendStatus(403);
+        return res.status(403).send({ error: "Usuário inválido!" });
     } catch (error) {
         console.log(error)
-        res.sendStatus(403);
+        res.status(403).send({ error: error });
     }
 }
 

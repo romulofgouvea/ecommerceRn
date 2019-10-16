@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, ActivityIndicator, FlatList, TextInput } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, TextInput, Alert } from "react-native";
 import { useDispatch } from 'react-redux';
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Container, Header, HeaderTitle, Icon, FooterTotal, Footer, ButtonCheckout, Card, AddressContent, AddressContainerActions, ContainerCards, AddressTitle, AddressDesc, ContainerEdit, AddressHeaderInput, AddressInput, IconDelete } from "./styles";
+import { Container, Header, HeaderTitle, Icon, Footer, ButtonCheckout, Card, AddressContent, ContainerCards, AddressTitle, AddressDesc, ContainerEdit, AddressHeaderInput, AddressInput, IconDelete } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
 import api from "../../Services";
@@ -20,8 +20,8 @@ function Address({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
     const [address, setAddress] = useState([]);
-    const [addressSelected, setAddressSelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
-    const [copySelected, setCopySelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
+    const [addressSelected, setAddressSelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "", status: 0 });
+    const [copySelected, setCopySelected] = useState({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "", status: 0 });
 
     //Action Functions
     const storeAddress = useCallback(
@@ -42,10 +42,14 @@ function Address({ navigation }) {
         navigation.push('Payment', { addressSelected });
     }
 
+    function clearAllState() {
+        setAddressSelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "", status: 0 });
+        setCopySelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "", status: 0 });
+    }
+
     function handleSelectAddress(item) {
         if (item._id === addressSelected._id) {
-            setAddressSelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
-            setCopySelected({ _id: "", street: "", number: "", complement: "", cep: "", neighborhood: "", city: "" });
+            clearAllState()
         } else {
             setAddressSelected(item);
             setCopySelected(item);
@@ -65,37 +69,107 @@ function Address({ navigation }) {
                 Authorization: `Bearer ${token}`
             }
         }
+        if (isEdit && addressSelected._id !== "") {
 
-        await api.put(`/address/${newAddress._id}`, newAddress, config)
-            .then(res => {
-                if (res.status === 200) {
-                    setIsEdit(false);
-                }
-            })
-            .catch(err => console.log(err));
+            await api.put(`/address/${newAddress._id}`, newAddress, config)
+                .then(res => {
+                    if (res.status === 200) {
+                        Alert.alert(
+                            'Endereço alterado',
+                            `Seu endereço ${newAddress.street} foi alterado :)`,
+                            [
+                                {
+                                    text: 'Obrigado por avisar :)', onPress: () => {
+                                        setIsEdit(false);
+                                    }
+                                }
+                            ],
+                            { cancelable: false },
+                        );
+                    }
+                })
+                .catch(err => console.log(err));
+        } else {
+            await api.post(`/address`, { address: [newAddress] }, config)
+                .then(res => {
+                    if (res.status === 200) {
+                        clearAllState();
+
+                        Alert.alert(
+                            'Endereço cadastrado',
+                            `Seu endereço ${newAddress.street} foi cadastrado :)`,
+                            [
+                                {
+                                    text: 'Obrigado por avisar :)', onPress: () => {
+                                        setAddress(res.data.address);
+                                        setIsEdit(false);
+                                    }
+                                }
+                            ],
+                            { cancelable: false },
+                        );
+                    }
+                })
+                .catch(err => console.log(err));
+        }
 
     }
 
-    async function removeAddress(address) {
+    async function removeAddress(oldAddress) {
 
+        Alert.alert(
+            'Remover Endereço',
+            `Deseja realmente remover o endereço ${oldAddress.street} ?`,
+            [
+                {
+                    text: 'Sim, eu quero :|', onPress: async () => {
+                        let token = await Store.getItem("token");
 
-        let token = await Store.getItem("token");
+                        let config = {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Accept: "application/json",
+                                Authorization: `Bearer ${token}`
+                            }
+                        }
 
-        let config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
+                        oldAddress.status = 1;
 
-        address.status = 1;
+                        await api.put(`/address/${oldAddress._id}`, oldAddress, config)
+                            .then(res => {
+                                if (res.status === 200 && Object.keys(res.data).length === 0) {
+                                    let copyAddres = [...address];
 
-        await api.put(`/address/${address._id}`, address, config)
-            .then(res => {
-                if (res.status === 200) {
-                    setIsEdit(false);
+                                    Alert.alert(
+                                        'Removido',
+                                        `Endereço removido :)`,
+                                        [
+                                            {
+                                                text: 'Obrigado', onPress: async () => {
+                                                    setIsLoading(true);
+                                                    let idx = copyAddres.findIndex(x => x._id === oldAddress._id);
+                                                    if (idx > -1) {
+                                                        copyAddres.splice(idx, 1);
+                                                        setAddress(copyAddres);
+                                                        setIsLoading(false);
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        { cancelable: false },
+                                    )
+                                }
+                            })
+                            .catch(err => console.log("Err ", err.response.data));
+                    }
+                },
+                {
+                    text: 'Não quero mais', onPress: () => { }
                 }
-            })
-            .catch(err => console.log(err));
+            ],
+        );
+
+
 
     }
 
@@ -132,6 +206,8 @@ function Address({ navigation }) {
                 <AddressInput value={copySelected.street} onChangeText={t => { setCopySelected({ ...copySelected, street: t }) }} ></AddressInput>
                 <AddressHeaderInput>Número</AddressHeaderInput>
                 <AddressInput value={copySelected.number} onChangeText={t => { setCopySelected({ ...copySelected, number: t }) }}></AddressInput>
+                <AddressHeaderInput>Complemento</AddressHeaderInput>
+                <AddressInput value={copySelected.complement} onChangeText={t => { setCopySelected({ ...copySelected, complement: t }) }}></AddressInput>
                 <AddressHeaderInput>Bairro</AddressHeaderInput>
                 <AddressInput value={copySelected.neighborhood} onChangeText={t => { setCopySelected({ ...copySelected, neighborhood: t }) }}></AddressInput>
                 <AddressHeaderInput>Cidade: </AddressHeaderInput>
@@ -155,13 +231,15 @@ function Address({ navigation }) {
                     <AddressDesc color={colorBack && 'white'} >Bairro: {item.neighborhood}, {item.city}</AddressDesc>
                     <AddressDesc color={colorBack && 'white'} >Cep: {item.cep}</AddressDesc>
                 </AddressContent>
-                <IconDelete onPress={() => removeAddress(item)}>
-                    <MaterialIcons
-                        name="remove-circle"
-                        size={20}
-                        color="red"
-                    />
-                </IconDelete>
+                {!cart && (
+                    <IconDelete onPress={() => removeAddress(item)}>
+                        <MaterialIcons
+                            name="remove-circle"
+                            size={20}
+                            color="red"
+                        />
+                    </IconDelete>
+                )}
             </Card>
         )
     }
@@ -214,13 +292,21 @@ function Address({ navigation }) {
                 <Text>{!cart ? "Meus endereços" : "Endereço de entrega"}</Text>
             </HeaderTitle>
             <Icon onPress={handleEditAddress}>
-                {addressSelected._id !== "" && (
-                    <MaterialIcons
-                        name="edit"
-                        size={20}
-                        color="#868686"
-                    />
-                )}
+                {addressSelected._id !== ""
+                    ? (
+                        <MaterialIcons
+                            name="edit"
+                            size={20}
+                            color="#868686"
+                        />
+                    ) : (
+                        <MaterialCommunityIcons
+                            name="plus"
+                            size={20}
+                            color="#868686"
+                        />
+                    )
+                }
             </Icon>
         </Header>
     );
