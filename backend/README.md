@@ -24,6 +24,9 @@ Adicionar as variaveis de ambiente:
 Inicio
     docker-compose -f "docker-compose.yml" up -d --build
 
+acesso ao bash
+    docker exec -i -t <container_id> sh
+
 mostrando dependencias das imagens
     - docker inspect --format='{{.Id}} {{.Parent}}' $(docker images --filter since=<image_id> -q)
 
