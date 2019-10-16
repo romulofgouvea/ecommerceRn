@@ -11,6 +11,19 @@ export const ContainerOrders = styled.View`
     padding: 16px;
 `;
 
+export const StatusCard = styled.Text`
+    color: #ACACAC;
+    padding: 8px;
+    font-size: 18px;
+    background-color: white;
+    text-align:center;
+    justify-content: center;
+    align-items: center;
+    border-top-width:1;
+    border-top-color: #ACACAC;
+`;
+
+
 export const TitleCard = styled.Text`
     color: #ACACAC;
     padding: 0 0 8px 0;
@@ -53,4 +66,29 @@ export const ProductsName = styled.Text`
     font-size: 16px;
     margin: 0 0 12px 0;
     font-weight: 500;
+`;
+
+
+//Container no Order
+export const ContainerNoData = styled.View`
+    background-color: #F5F5F5;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    flex:1;
+`;
+export const ContainerNoDataText = styled.View`
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+`;
+
+export const ButtonCheckout = styled.TouchableOpacity`
+    padding: 12px;
+    background-color: #4d7d13;
+    color: white;
+    justify-content:center;
+    align-items:center;
+    border-radius: 5px;
 `;

@@ -13,11 +13,13 @@ async function GetAll(req, res) {
             throw "Esse Id de usuário não é valido!";
         }
 
-        const order = await Order.find({ user: { $eq: { _id: userId } } }, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+        let order = await Order.find({ user: { $eq: { _id: userId } } }, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 })
             .populate('address')
             .populate('products', '-_id -__v -createdAt -updatedAt')
-            .sort('-createdAt')
-            .exec();
+            .sort('-createdAt');
+
+        order = order.filter(o => o.address && o.products && o);
+
         return res.json(order);
     } catch (error) {
         res.sendStatus(403);
@@ -33,7 +35,9 @@ async function GetOrder(req, res) {
             throw "Esse pedido não é valido!";
         }
 
-        const order = await Order.findById(orderId, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 }).populate('products', '-_id -__v -createdAt -updatedAt');
+        const order = await Order.findById(orderId, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+            .populate('address')
+            .populate('products', '-_id -__v -createdAt -updatedAt');
         return res.json(order);
     } catch (error) {
         res.sendStatus(403);

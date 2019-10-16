@@ -82,7 +82,6 @@ function Summary({ navigation }) {
     }
 
     //Lifecycle Functions
-    console.log(address)
 
     //Render Functions
     const _renderItemCart = ({ item }) => {

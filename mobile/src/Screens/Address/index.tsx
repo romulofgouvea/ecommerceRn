@@ -145,7 +145,7 @@ function Address({ navigation }) {
                                         `Endereço removido :)`,
                                         [
                                             {
-                                                text: 'Obrigado', onPress: async () => {
+                                                text: 'Obrigado', onPress: () => {
                                                     setIsLoading(true);
                                                     let idx = copyAddres.findIndex(x => x._id === oldAddress._id);
                                                     if (idx > -1) {
