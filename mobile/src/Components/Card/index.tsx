@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Text, View, Alert } from "react-native";
+import React, { useCallback } from "react";
+import { Text, View } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import { BASE_URL } from "../../Services";
-import { Actions, Types } from "../../Store/ducks/cart";
+import { Actions } from "../../Store/ducks/cart";
 
 import {
     Container,
@@ -61,43 +61,44 @@ const Card: React.FC<IProps> = ({ product }) => {
     //Lifecycle
 
     //Render Functions
-    const renderAddCard = () => {
-        if (product.qty > 0) {
-            return (
-                <ContainerAddLessCart>
-                    <Icon onPress={() => removeProduct(product)}>
-                        <MaterialCommunityIcons
-                            name="minus-circle-outline"
-                            size={22}
+    const renderAddCard = () => (
+        <ContainerAddLessCart>
+            {product.qty > 0
+                ? (
+                    <>
+                        <Icon onPress={() => removeProduct(product)}>
+                            <MaterialCommunityIcons
+                                name="minus-circle-outline"
+                                size={22}
+                                color="#4d7d13"
+                            />
+                        </Icon>
+                        <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
+                        <Icon onPress={() => addProduct(product)}>
+                            <MaterialCommunityIcons
+                                name="plus-circle-outline"
+                                size={22}
+                                color="#4d7d13"
+                            />
+                        </Icon>
+                    </>
+                )
+                : (
+                    <ButtonAddToCart onPress={() => addProduct(product)}>
+                        <Text style={{ color: "#4d7d13", flex: 1, fontSize: 14 }}>
+                            Adicionar ao carrinho
+                        </Text>
+                        <MaterialIcons
+                            name="local-mall"
+                            size={20}
                             color="#4d7d13"
                         />
-                    </Icon>
-                    <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
-                    <Icon onPress={() => addProduct(product)}>
-                        <MaterialCommunityIcons
-                            name="plus-circle-outline"
-                            size={22}
-                            color="#4d7d13"
-                        />
-                    </Icon>
-                </ContainerAddLessCart>
-            );
-        }
-        return (
-            <ButtonAddToCart onPress={() => addProduct(product)}>
-                <View style={{ padding: 8 }}>
-                    <MaterialIcons
-                        name="local-mall"
-                        size={20}
-                        color="#4d7d13"
-                    />
-                </View>
-                <Text style={{ color: "#4d7d13", flex: 1 }}>
-                    Adicionar ao carrinho
-                </Text>
-            </ButtonAddToCart>
-        );
-    };
+                    </ButtonAddToCart>
+                )
+
+            }
+        </ContainerAddLessCart>
+    )
 
     return (
         <Container>

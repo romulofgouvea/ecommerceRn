@@ -21,16 +21,20 @@ export const Price = styled.Text`
   color: #4d7d13;
   padding: 8px 0 4px 0;
   font-weight: 500;
+  font-size: 16px;
 `;
 
 export const Name = styled.Text`
   color: #222;
   text-align: center;
+  font-size: 16px;
+  padding-bottom: 4px;
 `;
 
 export const MeasureItem = styled.Text`
   color: #c6c6c6;
   padding-bottom: 8px;
+  font-size: 14px;
 `;
 
 export const Icon = styled.TouchableOpacity`
@@ -48,11 +52,8 @@ export const FooterCard = styled.View`
 `;
 
 export const ButtonAddToCart = styled.TouchableOpacity`
-  flex-wrap: wrap;
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+    flex-direction: row;
+    padding: 8.2px 0;
 `;
 
 export const ContainerAddLessCart = styled.View`
