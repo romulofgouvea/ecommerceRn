@@ -14,7 +14,6 @@ export const Header = styled.View`
     min-height: 54;
     background-color: white;
     padding: 0 8px;
-    elevation: 2;
 `;
 export const HeaderTitle = styled.View`
     flex:1;
