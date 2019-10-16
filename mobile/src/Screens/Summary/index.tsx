@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { ScrollView, Text, FlatList, View, Alert } from "react-native";
+import { ScrollView, Text, FlatList, Alert } from "react-native";
 
 import { Container, ContainerCard, Footer, ButtonCheckout, Card, CardImage, CardTitle, CardDesc, CardPrice, CardTexts, CardTotal, Header, Icon, HeaderTitle, ContainerPrice, CardQty, AddressContent, AddressTitle, AddressDesc, ContainerCardWhite } from "./styles";
 import { BASE_URL } from "../../Services";

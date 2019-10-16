@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, ActivityIndicator, FlatList, TextInput, Alert } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, Alert } from "react-native";
 import { useDispatch } from 'react-redux';
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 

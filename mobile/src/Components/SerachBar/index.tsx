@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-
-import { Text, View, TextInput} from "react-native";
 
 import { Container, SearchInput, SearchButton } from "./styles";
 

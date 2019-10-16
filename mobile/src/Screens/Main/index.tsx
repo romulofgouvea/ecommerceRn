@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 
 import { MaterialIcons } from "@expo/vector-icons";
-import { FlatList, View, ActivityIndicator, Text } from "react-native";
+import { FlatList, View, ActivityIndicator } from "react-native";
 
 import { Card, Badge, SerachBar } from "../../Components";
 
