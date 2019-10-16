@@ -11,7 +11,7 @@ export const Header = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    min-height: 44;
+    min-height: 54;
     background-color: white;
     padding: 0 8px;
     elevation: 2;

@@ -15,16 +15,10 @@ export const Header = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    min-height: 44;
+    min-height: 54;
     background-color: white;
     padding: 0 8px;
-
     elevation: 2;
-
-    shadowColor: black;
-    /* shadowOffset: 0 2; */
-    shadowOpacity: 0.1;
-    shadowRadius: 13;
 `;
 export const HeaderTitle = styled.View`
     flex:1;
