@@ -36,7 +36,6 @@ export const Icon = styled.TouchableOpacity`
 
 
 export const ContainerEdit = styled.View`
-    flex:1;
     margin: 16px;
     padding: 16px;
     background-color: white;

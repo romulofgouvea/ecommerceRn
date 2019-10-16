@@ -18,7 +18,7 @@ routes.get('/', (req, res) => {
 //Users
 routes.get('/users', UserController.userAuth, UserController.GetUser);
 routes.post('/users', UserController.CreateUser);
-routes.put('/users/:id', UserController.UpdateUser);
+routes.put('/users', UserController.userAuth, UserController.UpdateUser);
 
 //Address
 routes.get('/address', UserController.userAuth, AddressController.GetAddress);

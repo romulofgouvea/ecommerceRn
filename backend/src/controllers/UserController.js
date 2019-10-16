@@ -124,16 +124,12 @@ async function UpdateUser(req, res) {
             throw "Esse Id de usuário não é valido!";
         }
 
-        const { name, password } = req.body;
+        const { name } = req.body;
 
         let user = await User.User.findById(userId, { _id: 0, createdAt: 0, updatedAt: 0, __v: 0, reset: 0 });
 
         if (name) {
             user.name = name;
-        }
-
-        if (password) {
-            user.password = password;
         }
 
         await User.User.updateOne({ _id: userId }, user, { new: true });
