@@ -31,7 +31,7 @@ function Address({ navigation }) {
 
     function handleArrowBack() {
         if (!isEdit) {
-            navigation.goBack(null);
+            navigation.toggleDrawer();
         } else {
             setIsEdit(!isEdit);
         }
@@ -283,7 +283,7 @@ function Address({ navigation }) {
         <Header>
             <Icon onPress={handleArrowBack}>
                 <MaterialIcons
-                    name="arrow-back"
+                    name={isEdit ? "arrow-back" : "format-align-left"}
                     size={20}
                     color="#868686"
                 />

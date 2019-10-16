@@ -19,6 +19,13 @@ Criar o arquivo .env:
 Adicionar as variaveis de ambiente:
     JWT_SECRET=""
 
+## Docker
+
+Inicio
+    docker-compose -f "docker-compose.yml" up -d --build
+
+mostrando dependencias das imagens
+    - docker inspect --format='{{.Id}} {{.Parent}}' $(docker images --filter since=<image_id> -q)
 
 ## errors
 
