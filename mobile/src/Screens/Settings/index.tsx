@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Text } from "react-native";
 
-import { Container, ContainerConfig, TitleCard, LineContainer } from "./styles";
+import { Container, ContainerConfig, TitleCard, LineContainer, ContainerProfile, Icon } from "./styles";
 import { HeaderComponent } from "../../Components";
 
 import { Store } from "../../Services/SecureStore";
+import { MaterialIcons } from "@expo/vector-icons";
 
 function Settings({ navigation }) {
 
     //Variables
+    const [user, setUser] = useState({ name: "", email: "" });
     const [notification, setNotification] = useState(false);
 
     //Action Functions
@@ -23,6 +25,12 @@ function Settings({ navigation }) {
             not = true;
         }
         setNotification(not);
+
+        let usr = await Store.getItem('user');
+        if (usr === null) {
+            usr = { name: "", email: "" };
+        }
+        setUser(usr);
     }
 
     async function handleChangeValueNotifications() {
@@ -45,10 +53,28 @@ function Settings({ navigation }) {
                 title="Configurações"
             />
             <ContainerConfig>
-                <TitleCard>Notificações</TitleCard>
                 <LineContainer>
-                    <Text>Ativar notificações</Text>
-                    <Switch onValueChange={handleChangeValueNotifications} value={notification} />
+                    <TitleCard>Meu Perfil</TitleCard>
+                    <Icon>
+                        <MaterialIcons
+                            name="edit"
+                            size={20}
+                            color="#ACACAC"
+                        />
+                    </Icon>
+                </LineContainer>
+
+                <ContainerProfile>
+                    <Text style={{ fontSize: 12, color: "#ACACAC" }}>Nome</Text>
+                    <Text style={{ fontSize: 16 }}>{user.name}</Text>
+                    <Text style={{ fontSize: 12, paddingTop: 8, color: "#ACACAC" }}>Email</Text>
+                    <Text style={{ fontSize: 16 }}>{user.email}</Text>
+                </ContainerProfile>
+
+                <TitleCard> Notificações</TitleCard>
+                <LineContainer>
+                    <Text>Todas as notificações</Text>
+                    <Switch onValueChange={handleChangeValueNotifications} value={notification} thumbColor={notification ? "#4d7d13" : "#868686"} trackColor={{ true: "#ACACAC", false: "#ACACAC" }} ios_backgroundColor="#4d7d13" />
                 </LineContainer>
             </ContainerConfig>
         </Container>
