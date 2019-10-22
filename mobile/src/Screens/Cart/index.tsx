@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { Text, FlatList, View } from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
+import { Text, FlatList, View, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 
@@ -11,10 +11,10 @@ import { Actions } from "../../Store/ducks/cart";
 function Cart({ navigation }) {
 
     //Variables
+    const dispatch = useDispatch();
     const cart = useSelector(state => state.cart.products_cart);
     const total = useSelector(state => state.cart.total);
-
-    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(true);
 
     //Action Functions
     const addProduct = useCallback(
@@ -36,6 +36,11 @@ function Cart({ navigation }) {
     }
 
     //Lifecycle Functions
+    useEffect(() => {
+        if (cart.length > 0) {
+            setIsLoading(false);
+        }
+    }, [cart])
 
     //Render Functions
     const renderFooter = () => (
@@ -50,7 +55,12 @@ function Cart({ navigation }) {
     function renderContainerLessMore(product) {
         return (
             <ContainerLessMore>
-                <Icon onPress={() => removeProduct(product)}>
+                <Icon onPress={() => {
+                    if (product.qty === 1) {
+                        setIsLoading(true);
+                    }
+                    removeProduct(product)
+                }}>
                     <MaterialCommunityIcons
                         name="minus-circle-outline"
                         size={22}
@@ -58,7 +68,9 @@ function Cart({ navigation }) {
                     />
                 </Icon>
                 <Text style={{ color: "#222", fontSize: 16 }}>{product.qty}</Text>
-                <Icon onPress={() => addProduct(product)}>
+                <Icon onPress={() => {
+                    addProduct(product)
+                }}>
                     <MaterialCommunityIcons
                         name="plus-circle-outline"
                         size={22}
@@ -69,8 +81,8 @@ function Cart({ navigation }) {
         )
     }
 
-    const renderCard = ({ item }) => (
-        <Card key={item._id}>
+    const renderCard = ({ item, index }) => (
+        <Card key={index}>
             <CardImage source={{ uri: `${BASE_URL}/files/${item.image}` }} />
             <ContainerTexts>
                 <CardTitle>{item.name}</CardTitle>
@@ -81,14 +93,30 @@ function Cart({ navigation }) {
         </Card>
     )
 
-    const renderList = () => (
-        <FlatList
-            data={cart}
-            keyExtractor={item => item._id}
-            renderItem={renderCard}
-            extraData={cart}
-        />
-    )
+    function renderList() {
+        if (isLoading) {
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        padding: 20,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <ActivityIndicator />
+                </View>
+            );
+        }
+
+        return (
+            <FlatList
+                data={cart}
+                keyExtractor={item => item._id}
+                renderItem={renderCard}
+            />
+        )
+    }
 
     const renderHeader = () => (
         <Header>

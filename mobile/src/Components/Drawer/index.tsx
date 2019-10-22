@@ -11,6 +11,7 @@ import { Container, RowButton, TextButton } from "./styles";
 
 import { Store } from "../../Services/SecureStore";
 import { Actions } from "../../Store/ducks/main";
+import { Alert } from "react-native";
 
 interface IProps {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -34,8 +35,23 @@ const DrawerContainer: React.FC<IProps> = props => {
     }
 
     async function handleLogout() {
-        await Store.deleteItem("token");
-        props.navigation.navigate("Login");
+        Alert.alert(
+            'Sair',
+            'Deseja realmente sair?',
+            [
+                {
+                    text: 'Sair', onPress: async () => {
+                        await Store.deleteItem("token");
+                        props.navigation.navigate("Login");
+                    }
+                }, {
+                    text: 'Cancelar'
+                }
+            ],
+            { cancelable: false }
+        );
+
+
     }
 
     //Render Funtions
