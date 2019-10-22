@@ -134,16 +134,17 @@ function Orders({ navigation }) {
                 </View>
             )}
 
-            <ScrollView>
-                {orders.length > 0
-                    ? (
-                        <ContainerOrders>
-                            <TitleCard>Último Pedido</TitleCard>
-                            {renderOrder(orders[0])}
-
-                            {orders.length > 1 && renderAllOrdersWithoutFirst()}
-                        </ContainerOrders>
-                    ) : !isLoading && renderIfOrderEmpty()}
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <ContainerOrders>
+                    {orders.length > 0
+                        ? (
+                            <>
+                                <TitleCard>Último Pedido</TitleCard>
+                                {renderOrder(orders[0])}
+                                {orders.length > 1 && renderAllOrdersWithoutFirst()}
+                            </>
+                        ) : !isLoading && renderIfOrderEmpty()}
+                </ContainerOrders>
             </ScrollView>
 
         </Container>

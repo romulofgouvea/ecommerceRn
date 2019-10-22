@@ -9,6 +9,8 @@ export const ContainerOrders = styled.View`
     flex:1;
     background-color: #F5F5F5;
     padding: 16px;
+    align-items: center;
+    justify-content:center;
 `;
 
 export const StatusCard = styled.Text`
