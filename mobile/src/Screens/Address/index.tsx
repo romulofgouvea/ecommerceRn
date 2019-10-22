@@ -31,6 +31,10 @@ function Address({ navigation }) {
 
     function handleArrowBack() {
         if (!isEdit) {
+            if (cart) {
+                navigation.goBack(null);
+                return;
+            }
             navigation.toggleDrawer();
         } else {
             setIsEdit(!isEdit);
@@ -283,7 +287,7 @@ function Address({ navigation }) {
         <Header>
             <Icon onPress={handleArrowBack}>
                 <MaterialIcons
-                    name={isEdit ? "arrow-back" : "format-align-left"}
+                    name={isEdit || cart ? "arrow-back" : "format-align-left"}
                     size={20}
                     color="#868686"
                 />
