@@ -35,6 +35,6 @@ routes.put('/products/:id', upload.single('image'), ProductController.UpdateProd
 routes.get('/orders/user', UserController.userAuth, OrderController.GetAll);
 routes.get('/orders/:id', OrderController.GetOrder);
 routes.post('/orders', UserController.userAuth, OrderController.CreateOrder);
-routes.put('/orders/:id', OrderController.UpdateOrder);
+routes.put('/orders/:id', UserController.userAuth,OrderController.UpdateOrder);
 
 module.exports = routes;

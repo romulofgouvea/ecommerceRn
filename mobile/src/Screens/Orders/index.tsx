@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Text, ActivityIndicator, View, FlatList, ScrollView } from "react-native";
+import io from 'socket.io-client';
 
 import { Container, ContainerOrders, TitleCard, CardOrders, CardOrdersProducts, AddressContent, AddressTitle, AddressDesc, ProductsName, ContainerNoData, ContainerNoDataText, ButtonCheckout, StatusCard } from "./styles";
 import { Store } from "../../Services/SecureStore";
-import api from "../../Services";
+import api, { BASE_URL } from "../../Services";
 
 import { HeaderComponent } from '../../Components';
 import { Feather } from "@expo/vector-icons";
@@ -15,32 +16,48 @@ function Orders({ navigation }) {
     const [orders, setOrders] = useState([]);
 
     //Action Functions
-    function handleArrowBack() {
-        navigation.goBack(null);
+    function registerSocket() {
+        let socket = io(BASE_URL);
+        socket.on('order', ord => {
+
+            let idx = orders.findIndex(x => x._id === ord._id);
+            if (idx > -1) {
+                let copy = orders.map(o => o._id === ord._id ? ord : o);
+                if (copy) {
+                    setOrders(copy);
+                }
+            } else {
+                setOrders([ord, ...orders]);
+            }
+
+        });
     }
 
-    //Lifecycle Functions
-    useEffect(() => {
-
-        const getOrders = async () => {
+    async function getOrders() {
+        try {
             let token = await Store.getItem("token");
 
             let config = {
                 headers: { Authorization: `Bearer ${token}` }
             }
 
-            await api
-                .get("/orders/user", config)
-                .then(res => {
-                    if (res.status === 200)
-                        setOrders(res.data);
-                })
-                .catch(err => err);
-            setIsLoading(false);
-        };
+            const response = await api.get("/orders/user", config);
+            if (response.status === 200) {
+                setOrders(response.data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
+            if (error) alert('Não conseguimos buscar os produtos :(');
+        }
+    }
 
-        Promise.all([getOrders()]);
+    //Lifecycle Functions
+    useEffect(() => {
+        getOrders();
     }, []);
+
+    registerSocket();
 
     //Render Functions
     const renderItensProducts = (products) => (
@@ -134,19 +151,19 @@ function Orders({ navigation }) {
                 </View>
             )}
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <ContainerOrders>
-                    {orders.length > 0
-                        ? (
-                            <>
-                                <TitleCard>Último Pedido</TitleCard>
-                                {renderOrder(orders[0])}
-                                {orders.length > 1 && renderAllOrdersWithoutFirst()}
-                            </>
-                        ) : !isLoading && renderIfOrderEmpty()}
-                </ContainerOrders>
-            </ScrollView>
+            {orders.length > 0
+                && (
+                    <ScrollView>
+                        <ContainerOrders>
+                            <TitleCard>Último Pedido</TitleCard>
+                            {renderOrder(orders[0])}
+                            {orders.length > 1 && renderAllOrdersWithoutFirst()}
+                        </ContainerOrders>
+                    </ScrollView>
+                )
+            }
 
+            {!isLoading && orders.length === 0 && renderIfOrderEmpty()}
         </Container>
     );
 }

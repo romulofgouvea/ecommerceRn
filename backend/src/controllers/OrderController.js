@@ -76,6 +76,8 @@ async function CreateOrder(req, res) {
             address: existsAddress
         });
 
+        req.io.emit('order', order);
+
         return res.json(order);
     } catch (error) {
         console.log("Ops...", error)
@@ -86,27 +88,34 @@ async function CreateOrder(req, res) {
 async function UpdateOrder(req, res) {
     try {
         const orderId = req.params.id;
-        const { products } = req.body;
+        const { products, status } = req.body;
+
+        console.log(orderId, products, status);
         if (!orderId) {
             throw "Esse pedido não existe!";
         } else if (!mongoose.Types.ObjectId.isValid(orderId)) {
             throw "Esse pedido não é valido!";
         }
 
-        let tempProducts = []
-        for (let p of products) {
-            const findProduct = await Product.findById(p._id);
-
-            if (findProduct && findProduct.stock > 0) {
-                tempProducts.push({ _id: findProduct._id });
-            }
-        }
-
         const order = await Order.findById(orderId, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 });
 
-        order.products = tempProducts;
+        if (products) {
+            let tempProducts = []
+            for (let p of products) {
+                const findProduct = await Product.findById(p._id);
+
+                if (findProduct && findProduct.stock > 0) {
+                    tempProducts.push({ _id: findProduct._id });
+                }
+            }
+            order.products = tempProducts;
+        }
+        if ([0, 1, 2].includes(status))
+            order.status = status;
 
         order.save();
+
+        req.io.emit('order', order);
 
         return res.json(order);
     } catch (error) {

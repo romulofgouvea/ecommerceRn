@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-
+import io from 'socket.io-client';
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, View, ActivityIndicator } from "react-native";
 
 import { Card, Badge, SerachBar } from "../../Components";
 
 import { Container, Header, Icon, ImageHeader, ContainerCards } from "./styles";
-import api from "../../Services";
+import api, { BASE_URL } from "../../Services";
 import { Actions } from "../../Store/ducks/main";
 
 
@@ -50,21 +50,45 @@ function Main({ navigation }) {
         }
     }
 
+    function registerSocket() {
+        let socket = io(BASE_URL);
+        socket.on('product', pdt => {
+
+            let idx = copyProducts.findIndex(x => x._id === pdt._id);
+            if (idx > -1) {
+                let copy = copyProducts.map(p => p._id === pdt._id ? pdt : p);
+                if (copy) {
+                    setCopyProducts(copy);
+                    setProducts(copy);
+                }
+            } else {
+                setCopyProducts([pdt, ...copyProducts]);
+                setProducts([pdt, ...copyProducts]);
+            }
+
+        });
+    }
+
+    async function getProducts() {
+        try {
+            const response = await api.get("/products");
+            if (response.status === 200) {
+                setProducts(response.data);
+                setCopyProducts(response.data);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            console.log(error);
+            if (error) alert('Não conseguimos buscar os produtos :(');
+        }
+    }
+
     //Lifecycle Functions
     useEffect(() => {
-        const getProducts = async () => {
-            await api
-                .get("/products")
-                .then(res => {
-                    setProducts(res.data);
-                    setCopyProducts(res.data);
-                    setIsLoading(false);
-                })
-                .catch(err => err);
-        };
-
-        Promise.all([getProducts()]);
+        getProducts();
     }, []);
+
+    registerSocket();
 
     //Render Functions
     const renderCardItem = ({ item }) => {
