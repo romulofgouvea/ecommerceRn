@@ -30,6 +30,7 @@ export const Actions = {
 const INITIAL_STATE = {
     products_cart: [],
     total: 0,
+    qty_total: 0,
     address_selected: {},
     pay_method: ""
 };
@@ -65,7 +66,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 copyCart.push(action.product);
             }
 
-            return { ...state, products_cart: [...copyCart], total: calculateTotal(copyCart) };
+            return { ...state, products_cart: [...copyCart], total: calculateTotal(copyCart), qty_total: copyCart.length };
         case Types.DELETE_CART:
             let copyCartInDelete = [...state.products_cart];
 
@@ -78,7 +79,7 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 action.product.qty = 0;
             }
 
-            return { ...state, products_cart: [...copyCartInDelete], total: calculateTotal(copyCartInDelete) };
+            return { ...state, products_cart: [...copyCartInDelete], total: calculateTotal(copyCartInDelete), qty_total: copyCartInDelete.length };
         case Types.ADD_ADDRESS:
             return { ...state, address_selected: action.address };
         case Types.PAY_METHOD:

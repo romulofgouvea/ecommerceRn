@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import Routes from './src/Routes';
 import store from './src/Store';
 
-import { View, Platform, StatusBar, StyleSheet } from 'react-native';
+import { View, Platform, StatusBar, StyleSheet, YellowBox } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
@@ -17,6 +17,10 @@ const styles = StyleSheet.create({
 
     }
 })
+
+YellowBox.ignoreWarnings([
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+])
 
 const App = () => (
     <Provider store={store}>

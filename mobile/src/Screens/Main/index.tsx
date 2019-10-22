@@ -19,7 +19,7 @@ function Main({ navigation }) {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSearch, setIsSearch] = useState(false);
-    const qty = useSelector(state => filterQty(state.cart.products_cart));
+    const qty = useSelector(state => state.cart.qty_total);
 
     //Action Functions
     const setRoute = useCallback(
@@ -65,21 +65,6 @@ function Main({ navigation }) {
 
         Promise.all([getProducts()]);
     }, []);
-
-    //Utils Functions
-    function filterQty(products) {
-        if (products) {
-            var resArr = [];
-            products.forEach(function (item) {
-                var isIdx = resArr.findIndex(x => x.name == item.name) <= -1;
-                if (isIdx) {
-                    resArr.push({ id: item._id });
-                }
-            });
-            return resArr.length;
-        }
-        return 0;
-    }
 
     //Render Functions
     const renderCardItem = ({ item }) => {

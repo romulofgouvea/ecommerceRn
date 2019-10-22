@@ -9,12 +9,12 @@ const serverHttp = require('http').Server(app);
 
 const io = require('socket.io')(serverHttp);
 
-app.use('/files', express.static(path.resolve(__dirname, '..', '..', '..', 'uploads', 'resized')));
-
 app.use((req, res, next) => {
     req.io = io;
     next();
 })
+
+app.use('/files', express.static(path.resolve(__dirname, '..', '..', '..', 'uploads', 'resized')));
 app.use(express.json());
 app.use(cors())
 app.use(require('../../routes'));
