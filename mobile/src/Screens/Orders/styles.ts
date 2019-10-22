@@ -14,6 +14,7 @@ export const ContainerOrders = styled.View`
 export const StatusCard = styled.Text`
     color: #ACACAC;
     padding: 8px;
+    margin-bottom: 8px;
     font-size: 18px;
     background-color: white;
     text-align:center;

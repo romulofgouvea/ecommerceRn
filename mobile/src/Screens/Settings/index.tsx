@@ -97,8 +97,8 @@ function Settings({ navigation }) {
     return (
         <Container>
             <HeaderComponent
-                iconLeft={{ name: "arrow-back", onPress: handleArrowBack }}
                 title="Configurações"
+                navigation={navigation}
             />
 
             {!isEdit ? (
@@ -128,11 +128,11 @@ function Settings({ navigation }) {
                     </LineContainer>
                 </ContainerConfig>
             )
-            :(
-                <ContainerConfig>
+                : (
+                    <ContainerConfig>
                         {renderEditProfile()}
-                </ContainerConfig>
-            )
+                    </ContainerConfig>
+                )
 
             }
 

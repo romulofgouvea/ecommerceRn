@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, ActivityIndicator, View, FlatList } from "react-native";
+import { Text, ActivityIndicator, View, FlatList, ScrollView } from "react-native";
 
 import { Container, ContainerOrders, TitleCard, CardOrders, CardOrdersProducts, AddressContent, AddressTitle, AddressDesc, ProductsName, ContainerNoData, ContainerNoDataText, ButtonCheckout, StatusCard } from "./styles";
 import { Store } from "../../Services/SecureStore";
@@ -117,8 +117,8 @@ function Orders({ navigation }) {
     return (
         <Container>
             <HeaderComponent
-                iconLeft={{ name: "arrow-back", onPress: handleArrowBack }}
                 title="Meus Pedidos"
+                navigation={navigation}
             />
 
             {isLoading && (
@@ -134,16 +134,17 @@ function Orders({ navigation }) {
                 </View>
             )}
 
-            {orders.length > 0
-                ? (
-                    <ContainerOrders>
-                        <TitleCard>Último Pedido</TitleCard>
-                        {renderOrder(orders[0])}
+            <ScrollView>
+                {orders.length > 0
+                    ? (
+                        <ContainerOrders>
+                            <TitleCard>Último Pedido</TitleCard>
+                            {renderOrder(orders[0])}
 
-                        {orders.length > 1 && renderAllOrdersWithoutFirst()}
-                    </ContainerOrders>
-                ) : !isLoading && renderIfOrderEmpty()}
-
+                            {orders.length > 1 && renderAllOrdersWithoutFirst()}
+                        </ContainerOrders>
+                    ) : !isLoading && renderIfOrderEmpty()}
+            </ScrollView>
 
         </Container>
     );

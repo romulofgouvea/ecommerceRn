@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { Header, Icon, HeaderImage, HeaderTitle } from "./styles";
 import Badge from "../Badge";
+import { NavigationScreenProp, NavigationState, NavigationParams } from "react-navigation";
 
 type icon = {
     name: string
@@ -16,23 +17,27 @@ interface IProps {
     qty?: number,
     title?: string,
     image?: string,
-    iconLeft?: icon
-    iconRightOne?: icon
-    iconRightTwo?: icon
+    iconLeft?: icon,
+    iconRightOne?: icon,
+    iconRightTwo?: icon,
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
-const HeaderComponent: React.FC<IProps> = ({ qty, title, image, iconLeft, iconRightOne, iconRightTwo }) => {
+const HeaderComponent: React.FC<IProps> = ({ qty, title, image, iconLeft, iconRightOne, iconRightTwo, navigation }) => {
+
+    function handleMenu() {
+        navigation.toggleDrawer();
+    }
+
     return (
         <Header>
-            {iconLeft && (
-                <Icon onPress={iconLeft.onPress} disable={!iconLeft.name}>
-                    <MaterialIcons
-                        name={iconLeft.name ? iconLeft.name : "format-align-left"}
-                        size={20}
-                        color="#868686"
-                    />
-                </Icon>
-            )}
+            <Icon onPress={iconLeft && iconLeft.onPress ? iconLeft.onPress : handleMenu} disable={iconLeft && !iconLeft.name}>
+                <MaterialIcons
+                    name={iconLeft && iconLeft.name ? iconLeft.name : "format-align-left"}
+                    size={20}
+                    color="#868686"
+                />
+            </Icon>
 
             {image && <HeaderImage />}
             {title && <HeaderTitle><Text>{title}</Text></HeaderTitle>}
