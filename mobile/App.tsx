@@ -1,3 +1,4 @@
+console.ignoredYellowBox = ['Remote debugger'];
 import React from 'react';
 import { Provider } from 'react-redux';
 
@@ -17,6 +18,7 @@ const styles = StyleSheet.create({
 
     }
 })
+
 
 YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'

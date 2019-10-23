@@ -90,7 +90,6 @@ async function UpdateOrder(req, res) {
         const orderId = req.params.id;
         const { products, status } = req.body;
 
-        console.log(orderId, products, status);
         if (!orderId) {
             throw "Esse pedido não existe!";
         } else if (!mongoose.Types.ObjectId.isValid(orderId)) {
