@@ -54,19 +54,11 @@ function Main({ navigation }) {
     function registerSocket() {
         socket.on('product', pdt => {
 
-            console.log(pdt, copyProducts);
-
-            // let idx = copyProducts.findIndex(x => x._id === pdt._id);
-            // if (idx > -1) {
-            //     let copy = copyProducts.map(p => p._id === pdt._id ? pdt : p);
-            //     if (copy) {
-            //         setCopyProducts(copy);
-            //         setProducts(copy);
-            //     }
-            // } else {
-            //     setCopyProducts([pdt, ...copyProducts]);
-            //     setProducts([pdt, ...copyProducts]);
-            // }
+            let idx = copyProducts.findIndex(x => x._id === pdt._id);
+            if (idx < -1) {
+                setCopyProducts([pdt, ...copyProducts]);
+                setProducts([pdt, ...copyProducts]);
+            }
 
         });
     }

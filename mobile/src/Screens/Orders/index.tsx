@@ -20,14 +20,10 @@ function Orders({ navigation }) {
     //Action Functions
     function registerSocket() {
         socket.on('order', ord => {
-            console.log(ord, orders);
-            // let exists = orders.findIndex(x => x._id === ord._id) > -1;
-            // if (exists) {
-            //     setOrders(orders.map(o => o._id === ord._id ? ord : o));
-            // } else {
-            //     setOrders([ord, ...orders]);
-            // }
-
+            let nExists = orders.findIndex(x => x._id === ord._id) < -1;
+            if (nExists) {
+                setOrders([ord, ...orders]);
+            }
         });
     }
 
@@ -56,7 +52,7 @@ function Orders({ navigation }) {
 
         registerSocket();
 
-        return () =>{
+        return () => {
             socket.off('order');
         }
     }, [orders]);
