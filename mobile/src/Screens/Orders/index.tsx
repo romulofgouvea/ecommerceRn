@@ -9,6 +9,8 @@ import api, { BASE_URL } from "../../Services";
 import { HeaderComponent } from '../../Components';
 import { Feather } from "@expo/vector-icons";
 
+const socket = io(BASE_URL);
+
 function Orders({ navigation }) {
 
     //Variables
@@ -17,18 +19,14 @@ function Orders({ navigation }) {
 
     //Action Functions
     function registerSocket() {
-        let socket = io(BASE_URL);
         socket.on('order', ord => {
-
-            let idx = orders.findIndex(x => x._id === ord._id);
-            if (idx > -1) {
-                let copy = orders.map(o => o._id === ord._id ? ord : o);
-                if (copy) {
-                    setOrders(copy);
-                }
-            } else {
-                setOrders([ord, ...orders]);
-            }
+            console.log(ord, orders);
+            // let exists = orders.findIndex(x => x._id === ord._id) > -1;
+            // if (exists) {
+            //     setOrders(orders.map(o => o._id === ord._id ? ord : o));
+            // } else {
+            //     setOrders([ord, ...orders]);
+            // }
 
         });
     }
@@ -55,9 +53,14 @@ function Orders({ navigation }) {
     //Lifecycle Functions
     useEffect(() => {
         getOrders();
-    }, []);
 
-    registerSocket();
+        registerSocket();
+
+        return () =>{
+            socket.off('order');
+        }
+    }, [orders]);
+
 
     //Render Functions
     const renderItensProducts = (products) => (
