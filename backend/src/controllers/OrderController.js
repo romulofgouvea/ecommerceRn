@@ -6,6 +6,22 @@ const Address = require('../models/Address');
 
 async function GetAll(req, res) {
     try {
+
+        let order = await Order.find({}, { user: 0, __v: 0, createdAt: 0, updatedAt: 0 })
+            .populate('address')
+            .populate('products', '-_id -__v -createdAt -updatedAt')
+            .sort('-createdAt');
+
+        order = order.filter(o => o.address && o.products && o);
+
+        return res.json(order);
+    } catch (error) {
+        res.sendStatus(403);
+    }
+}
+
+async function GetAllByUser(req, res) {
+    try {
         const userId = req.user._id;
         if (!userId) {
             throw "Esse Id de usuário não existe!";
@@ -126,6 +142,7 @@ async function UpdateOrder(req, res) {
 
 module.exports = {
     GetAll,
+    GetAllByUser,
     GetOrder,
     CreateOrder,
     UpdateOrder

@@ -1,0 +1,21 @@
+.container{
+  width: 90%;
+  margin: 0 auto;
+  padding: 16px 0;
+}
+
+table {
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}

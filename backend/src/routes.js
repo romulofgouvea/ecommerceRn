@@ -32,7 +32,8 @@ routes.post('/products', upload.single('image'), ProductController.CreateProduct
 routes.put('/products/:id', upload.single('image'), ProductController.UpdateProduct);
 
 //Orders
-routes.get('/orders/user', UserController.userAuth, OrderController.GetAll);
+routes.get('/orders', OrderController.GetAll);
+routes.get('/orders/user', UserController.userAuth, OrderController.GetAllByUser);
 routes.get('/orders/:id', OrderController.GetOrder);
 routes.post('/orders', UserController.userAuth, OrderController.CreateOrder);
 routes.put('/orders/:id', UserController.userAuth,OrderController.UpdateOrder);
