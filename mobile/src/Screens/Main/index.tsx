@@ -60,6 +60,7 @@ function Main({ navigation }) {
                 setProducts([pdt, ...copyProducts]);
             }
 
+            getProducts();
         });
     }
 
@@ -80,7 +81,9 @@ function Main({ navigation }) {
     //Lifecycle Functions
     useEffect(() => {
         getProducts();
+    }, []);
 
+    useEffect(() => {
         registerSocket();
 
         return () => {

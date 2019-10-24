@@ -40,6 +40,7 @@ function Login({ navigation }) {
             await Store.setItem("token", res.data.token);
             await Store.setItem("user", res.data.user);
 
+            setLoading(false);
             navigation.navigate("Main");
 
         } catch (error) {
@@ -52,8 +53,6 @@ function Login({ navigation }) {
                 ],
                 { cancelable: false }
             );
-        } finally {
-            setLoading(false);
         }
     }
 
