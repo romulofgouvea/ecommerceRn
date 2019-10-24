@@ -24,6 +24,7 @@ function Orders({ navigation }) {
             if (nExists) {
                 setOrders([ord, ...orders]);
             }
+            getOrders();
         });
     }
 
@@ -49,7 +50,9 @@ function Orders({ navigation }) {
     //Lifecycle Functions
     useEffect(() => {
         getOrders();
+    }, []);
 
+    useEffect(() => {
         registerSocket();
 
         return () => {
